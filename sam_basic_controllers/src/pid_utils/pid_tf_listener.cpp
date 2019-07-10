@@ -10,7 +10,7 @@
 
 
 int main(int argc, char** argv){
-  
+
   std::string node_name = "pid_tf_listener";
   ros::init(argc, argv, node_name);
 
@@ -19,20 +19,24 @@ int main(int argc, char** argv){
   std::string base_frame;
   std::string odom_frame;
   std::string world_frame;
+  double freq;
 
   node.param<std::string>(node_name + "/base_frame", base_frame, "base_link");
   node.param<std::string>(node_name + "/world_frame", world_frame, "world");
   node.param<std::string>(node_name + "/odom_frame", odom_frame, "odom");
+  node.param<double>("loop_freq", freq, 10);
 
 //initiate publishers
-  ros::Publisher feedback_pitch = node.advertise<std_msgs::Float64>("pitch_feedback", 10);
-  ros::Publisher feedback_roll = node.advertise<std_msgs::Float64>("roll_feedback", 10);
-  ros::Publisher feedback_yaw = node.advertise<std_msgs::Float64>("yaw_feedback", 10);
-  ros::Publisher feedback_depth = node.advertise<std_msgs::Float64>("depth_feedback", 10);
+  ros::Publisher feedback_pitch = node.advertise<std_msgs::Float64>("pitch_feedback", freq);
+  ros::Publisher feedback_roll = node.advertise<std_msgs::Float64>("roll_feedback", freq);
+  ros::Publisher feedback_yaw = node.advertise<std_msgs::Float64>("yaw_feedback", freq);
+  ros::Publisher feedback_depth = node.advertise<std_msgs::Float64>("depth_feedback", freq);
+  ros::Publisher feedback_x = node.advertise<std_msgs::Float64>("x_feedback", freq);
+  ros::Publisher feedback_y = node.advertise<std_msgs::Float64>("y_feedback", freq);
 
 //Variable initialization
   tf::TransformListener listener;
-  std_msgs::Float64 current_roll,current_pitch,current_yaw,current_depth;
+  std_msgs::Float64 current_roll,current_pitch,current_yaw,current_depth, current_x,current_y;
   double r,p,y;
   tf::Quaternion tfq;
 
@@ -60,13 +64,17 @@ int main(int argc, char** argv){
     current_roll.data= r;
     current_yaw.data= y;
     current_depth.data= -transform.getOrigin().z();
+    current_x.data= transform.getOrigin().x();
+    current_y.data= transform.getOrigin().y();
 
     feedback_pitch.publish(current_pitch);
     feedback_roll.publish(current_roll);
     feedback_yaw.publish(current_yaw);
     feedback_depth.publish(current_depth);
+    feedback_x.publish(current_x);
+    feedback_y.publish(current_y);
 
-    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f,, depth: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data);
+    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data);
 
     rate.sleep();
   }

@@ -8,7 +8,7 @@
 
 sam_msgs::BallastAngles control_action;
 //std_msgs::Float64 control_action;
-double prev_control_msg1,prev_control_msg2,limit;
+double prev_control_msg1,prev_control_msg2,limit, freq;
 std::string topic_from_controller_1_,topic_from_controller_2_, topic_to_actuator_;
 
 
@@ -41,16 +41,17 @@ int main(int argc, char** argv){
 
   node_priv.param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_tcg_command");
   node_priv.param<double>("limit_between_setpoints", limit, 5);
+  node_priv.param<double>("loop_freq", freq, 10);
 
   //initiate subscribers
   ros::Subscriber pid_action_sub_w1 = node.subscribe(topic_from_controller_1_, 1, PIDCallback1);
   ros::Subscriber pid_action_sub_w2 = node.subscribe(topic_from_controller_2_, 1, PIDCallback2);
 
   //initiate publishers
-  ros::Publisher control_action_pub = node.advertise<sam_msgs::BallastAngles>(topic_to_actuator_, 10);
+  ros::Publisher control_action_pub = node.advertise<sam_msgs::BallastAngles>(topic_to_actuator_, freq);
   //ros::Publisher control_action_pub = node.advertise<std_msgs::Float64>(topic_to_actuator_, 10);
 
-  ros::Rate rate(10.0);
+  ros::Rate rate(freq);
 
   while (node.ok()){
 

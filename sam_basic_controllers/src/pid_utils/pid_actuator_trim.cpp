@@ -27,7 +27,7 @@ int main(int argc, char** argv){
   node_priv.param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
   node_priv.param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
   node_priv.param<double>("limit_between_setpoints", limit, 5);
-  node_priv.param<double>("loop_frequency", freq, 50);
+  node_priv.param<double>("loop_freq", freq, 50);
 
   //initiate subscribers
   ros::Subscriber pid_action_sub = node.subscribe(topic_from_controller_, 1, PIDCallback);

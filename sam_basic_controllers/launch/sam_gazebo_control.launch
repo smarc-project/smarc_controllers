@@ -2,18 +2,6 @@
 
     <arg name="namespace" default="sam"/>
 
-    <!--
-    <node name="pid_setpoint_static" pkg="sam_loop_test" type="pid_setpoint_static" ns="LCG_trim">
-      <param name="setpoint_topic" value="/pitch_setpoint" />
-      <param name="setpoint" value="0.15" />
-    </node>
-
-    <node name="pid_setpoint_static" pkg="sam_loop_test" type="pid_setpoint_static" ns="VBS_depth">
-      <param name="setpoint_topic" value="/depth_setpoint" />
-      <param name="setpoint" value="50" />
-    </node>
-    -->
-
     <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
 	    <param name="odom_frame" value="$(arg namespace)_odom"/>
 	    <param name="base_frame" value="sam_auv_1/base_link"/>

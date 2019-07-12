@@ -9,7 +9,7 @@
       <param name="loop_freq" value="50" />
     </node>
 
-    <node name="pid_actuator_tv" pkg="sam_basic_controllers" type="pid_actuator_tv" ns="Pitch_Elevator" >
+    <node name="pid_actuator_tv" pkg="sam_basic_controllers" type="pid_actuator_tv" >
       <param name="topic_from_controller_1" value="/Pitch_Elevator/elevator_setpoint" />
       <param name="topic_from_controller_1" value="/Yaw_Rudder/rudder_setpoint" />
       <param name="topic_to_actuator" value="/actuator_input" />

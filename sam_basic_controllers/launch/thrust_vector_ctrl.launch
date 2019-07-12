@@ -15,7 +15,7 @@
       <param name="topic_to_actuator" value="/actuator_input" />
       <param name="limit_between_setpoints" value="0.01" />
       <param name="loop_freq" value="10" />
-      <remap from="/actuator_input" to="/uavcan_tv_angle"/>
+      <remap from="/actuator_input" to="/uavcan_vector_command"/>
     </node>
 
     <node name="controller" pkg="pid" type="controller" ns="Pitch_Elevator" output="screen" >

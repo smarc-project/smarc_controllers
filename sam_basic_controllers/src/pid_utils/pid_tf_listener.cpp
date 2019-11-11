@@ -58,7 +58,7 @@ int main(int argc, char** argv){
       listener.lookupTransform(world_frame, base_frame,
                                ros::Time(0), transform);
       listener.lookupTwist(world_frame, base_frame,
-                               ros::Time(0), ros::Duration(10), twist);
+                               ros::Time(0), ros::Duration(2.0), twist);
     }
 
     catch (tf::TransformException ex){

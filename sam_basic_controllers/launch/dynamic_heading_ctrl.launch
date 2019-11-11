@@ -18,7 +18,7 @@
       <remap from="/actuator_input" to="/uavcan_tv_angle"/>
     </node>
 
-    <node name="controller" pkg="pid" type="controller" ns="Pitch_Elevator" output="screen" >
+    <node name="controller1" pkg="pid" type="controller" ns="Dynamic_Heading" output="screen" >
       <param name="Kp" value="0.5" />
       <param name="Ki" value="0.0" />
       <param name="Kd" value="0.01" />
@@ -28,14 +28,15 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/pitch_feedback" />
-      <param name="topic_from_controller" value="elevator_setpoint" />
-      <remap from="setpoint" to="/pitch_setpoint" />
+      <param name="topic_from_plant" value="/yaw_feedback" />
+      <param name="topic_from_controller" value="r_setpoint" />
+      <remap from="setpoint" to="/depth_setpoint" />
+      <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
       <!--remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
      </node>
 
-     <node name="controller" pkg="pid" type="controller" ns="Yaw_Rudder" output="screen" >
+     <node name="controller2" pkg="pid" type="controller" ns="Dynamic_Heading" output="screen" >
        <param name="Kp" value="0.5" />
        <param name="Ki" value="0.0" />
        <param name="Kd" value="0.01" />
@@ -45,9 +46,9 @@
        <param name="max_loop_frequency" value="100.0" />
        <param name="min_loop_frequency" value="100.0" />
        <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-       <param name="topic_from_plant" value="/yaw_feedback" />
-       <param name="topic_from_controller" value="rudder_setpoint" />
-       <remap from="setpoint" to="/yaw_setpoint" />
+       <param name="topic_from_plant" value="/r_feedback" />
+       <param name="topic_from_controller" value="/rudder_setpoint" />
+       <remap from="setpoint" to="r_setpoint" />
        <!--remap from="/plant_state_pitch" to="state" />
        <remap from="control_effort" to="/control_effort" /-->
       </node>

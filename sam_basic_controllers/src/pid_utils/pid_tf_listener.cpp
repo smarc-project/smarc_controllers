@@ -33,10 +33,16 @@ int main(int argc, char** argv){
   ros::Publisher feedback_depth = node.advertise<std_msgs::Float64>("depth_feedback", freq);
   ros::Publisher feedback_x = node.advertise<std_msgs::Float64>("x_feedback", freq);
   ros::Publisher feedback_y = node.advertise<std_msgs::Float64>("y_feedback", freq);
+  ros::Publisher feedback_u = node.advertise<std_msgs::Float64>("u_feedback", freq);
+  ros::Publisher feedback_v = node.advertise<std_msgs::Float64>("v_feedback", freq);
+  ros::Publisher feedback_w = node.advertise<std_msgs::Float64>("w_feedback", freq);
+  ros::Publisher feedback_p = node.advertise<std_msgs::Float64>("p_feedback", freq);
+  ros::Publisher feedback_q = node.advertise<std_msgs::Float64>("q_feedback", freq);
+  ros::Publisher feedback_r = node.advertise<std_msgs::Float64>("r_feedback", freq);
 
 //Variable initialization
   tf::TransformListener listener;
-  std_msgs::Float64 current_roll,current_pitch,current_yaw,current_depth, current_x,current_y;
+  std_msgs::Float64 current_roll,current_pitch,current_yaw,current_depth, current_x,current_y, current_u, current_v, current_w, current_p,current_q, current_r;
   double r,p,y;
   tf::Quaternion tfq;
 
@@ -47,10 +53,14 @@ int main(int argc, char** argv){
   ros::Rate rate(10.0);
   while (node.ok()){
     tf::StampedTransform transform;
+    geometry_msgs::Twist  twist;
     try{//transform between world and required frame
       listener.lookupTransform(world_frame, base_frame,
                                ros::Time(0), transform);
+      listener.lookupTwist(world_frame, base_frame,
+                               ros::Time(0), ros::Duration(10), twist);
     }
+
     catch (tf::TransformException ex){
       ROS_ERROR("%s",ex.what());
       ros::Duration(1.0).sleep();
@@ -60,6 +70,7 @@ int main(int argc, char** argv){
     tfq = transform.getRotation();
     tf::Matrix3x3(tfq).getEulerYPR(y,p,r);
 
+    //orientation
     current_pitch.data= p;
     current_roll.data= r;
     current_yaw.data= y;
@@ -67,12 +78,30 @@ int main(int argc, char** argv){
     current_x.data= transform.getOrigin().x();
     current_y.data= transform.getOrigin().y();
 
+    //Velocity
+    current_u.data= twist.linear.x;
+    current_v.data= twist.linear.y;
+    current_w.data= twist.linear.z;
+    current_p.data= twist.angular.x;
+    current_q.data= twist.angular.y;
+    current_r.data= twist.angular.z;
+
+    //Publish orientation
     feedback_pitch.publish(current_pitch);
     feedback_roll.publish(current_roll);
     feedback_yaw.publish(current_yaw);
     feedback_depth.publish(current_depth);
     feedback_x.publish(current_x);
     feedback_y.publish(current_y);
+
+    //Publish velocity
+    feedback_u.publish(current_u);
+    feedback_v.publish(current_v);
+    feedback_w.publish(current_w);
+    feedback_p.publish(current_p);
+    feedback_q.publish(current_q);
+    feedback_r.publish(current_r);
+
 
     ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data);
 

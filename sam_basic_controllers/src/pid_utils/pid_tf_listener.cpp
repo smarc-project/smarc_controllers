@@ -103,7 +103,7 @@ int main(int argc, char** argv){
     feedback_r.publish(current_r);
 
 
-    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data);
+    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f, u: %f, v: %f, w: %f, p: %f, q: %f, r: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data, current_u.data, current_v.data, current_w.data, current_p.data, current_q.data, current_r.data);
 
     rate.sleep();
   }

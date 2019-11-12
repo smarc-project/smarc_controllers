@@ -205,7 +205,6 @@ include_directories(
 # catkin_add_nosetests(test)
 
 add_executable(pid_tf_listener src/pid_utils/pid_tf_listener.cpp)
-<<<<<<< HEAD:sam_basic_controllers/CMakeLists.txt
 add_executable(pid_actuator_trim src/pid_utils/pid_actuator_trim.cpp)
 add_executable(pid_actuator_tcg src/pid_utils/pid_actuator_tcg.cpp)
 add_executable(pid_actuator_tv src/pid_utils/pid_actuator_tv.cpp)
@@ -219,21 +218,6 @@ add_dependencies(pid_actuator_tv ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 add_dependencies(pid_actuator_prop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_gazebo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-=======
-add_executable(pid_actuator src/pid_utils/pid_actuator.cpp)
-add_executable(pid_setpoint_static src/pid_utils/pid_setpoint_static.cpp)
-
-add_dependencies(loop_feedback ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(loop_actuator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(pid_actuator ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(actuator_pub ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(loop_feedback ${catkin_LIBRARIES})
-target_link_libraries(loop_actuator ${catkin_LIBRARIES})
-target_link_libraries(loop_sensor ${catkin_LIBRARIES})
-target_link_libraries(actuator_pub ${catkin_LIBRARIES})
-target_link_libraries(pid_imu ${catkin_LIBRARIES})
->>>>>>> upstream/master:sam_loop_test/CMakeLists.txt
 target_link_libraries(pid_tf_listener ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_trim ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tcg ${catkin_LIBRARIES})

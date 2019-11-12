@@ -17,18 +17,14 @@ int main(int argc, char** argv){
   ros::NodeHandle node;
 
   std::string base_frame;
-  // std::string odom_frame;
+  std::string odom_frame;
   std::string world_frame;
   double freq;
 
   node.param<std::string>(node_name + "/base_frame", base_frame, "base_link");
   node.param<std::string>(node_name + "/world_frame", world_frame, "world");
-<<<<<<< HEAD:sam_basic_controllers/src/pid_utils/pid_tf_listener.cpp
   node.param<std::string>(node_name + "/odom_frame", odom_frame, "odom");
   node.param<double>("loop_freq", freq, 10);
-=======
-  // node.param<std::string>(node_name + "/odom_frame", odom_frame, "odom");
->>>>>>> upstream/master:sam_loop_test/src/pid_utils/pid_tf_listener.cpp
 
 //initiate publishers
   ros::Publisher feedback_pitch = node.advertise<std_msgs::Float64>("pitch_feedback", freq);

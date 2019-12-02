@@ -3,6 +3,7 @@
 <arg name="namespace" default="sam"/>
 <arg name="with_heading" default="true"/>
 <arg name="with_depth" default="true"/>
+<arg name="with_velocity" default="true"/>
 
 <group ns="$(arg namespace)">
     <group ns="ctrl">
@@ -16,12 +17,25 @@
             <remap from="/actuator_input" to="/$(arg namespace)/core/thrust_vector_cmd"/>
         </node>
 
+        <node name="pid_actuator_prop" pkg="sam_basic_controllers" type="pid_actuator_prop" >
+          <param name="topic_from_roll_controller" value="/$(arg namespace)/ctrl/rpm_diff" />
+          <param name="topic_from_vel_controller" value="/$(arg namespace)/ctrl/rpm_avg" />
+          <param name="topic_to_actuator" value="/actuator_input" />
+          <param name="limit_between_setpoints" value="1" />
+          <param name="loop_freq" value="10" />
+          <remap from="/actuator_input" to="/$(arg namespace)/core/rpm_cmd"/>
+        </node>
 
-        <include file="$(find sam_basic_controllers)/launch/dynamic_depth_ctrl.launch">
+
+        <include file="$(find sam_basic_controllers)/launch/dynamic_depth_ctrl.launch" if="$(arg with_depth)">
             <arg name="namespace" value="$(arg namespace)" />
         </include>
 
-        <include file="$(find sam_basic_controllers)/launch/dynamic_heading_ctrl.launch">
+        <include file="$(find sam_basic_controllers)/launch/dynamic_heading_ctrl.launch" if="$(arg with_heading)">
+            <arg name="namespace" value="$(arg namespace)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/dynamic_velocity_ctrl.launch" if="$(arg with_velocity)">
             <arg name="namespace" value="$(arg namespace)" />
         </include>
 

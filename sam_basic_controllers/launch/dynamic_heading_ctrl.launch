@@ -15,13 +15,13 @@
       <param name="topic_to_actuator" value="/actuator_input" />
       <param name="limit_between_setpoints" value="0.01" />
       <param name="loop_freq" value="10" />
-      <remap from="/actuator_input" to="/uavcan_tv_angle"/>
+      <remap from="/actuator_input" to="/uavcan_vector_command"/>
     </node>
 
     <node name="controller1" pkg="pid" type="controller" ns="Dynamic_Heading" output="screen" >
-      <param name="Kp" value="0.5" />
+      <param name="Kp" value="1.0" />
       <param name="Ki" value="0.0" />
-      <param name="Kd" value="0.01" />
+      <param name="Kd" value="0.0" />
       <param name="upper_limit" value="0.1" />
       <param name="lower_limit" value="-0.1" />
       <param name="windup_limit" value="100" />
@@ -37,9 +37,9 @@
      </node>
 
      <node name="controller2" pkg="pid" type="controller" ns="Dynamic_Heading" output="screen" >
-       <param name="Kp" value="0.5" />
-       <param name="Ki" value="0.0" />
-       <param name="Kd" value="0.01" />
+       <param name="Kp" value="-5" />
+       <param name="Ki" value="-0.0" />
+       <param name="Kd" value="-0.0" />
        <param name="upper_limit" value="0.1" />
        <param name="lower_limit" value="-0.1" />
        <param name="windup_limit" value="100" />

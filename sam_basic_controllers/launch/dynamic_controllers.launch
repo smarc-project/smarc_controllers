@@ -1,0 +1,31 @@
+<launch>
+
+<arg name="namespace" default="sam"/>
+<arg name="with_heading" default="true"/>
+<arg name="with_depth" default="true"/>
+
+<group ns="$(arg namespace)">
+    <group ns="ctrl">
+
+        <node name="pid_actuator_tv" pkg="sam_basic_controllers" type="pid_actuator_tv">
+            <param name="topic_from_controller_1" value="/$(arg namespace)/ctrl/elevator_setpoint" />
+            <param name="topic_from_controller_2" value="/$(arg namespace)/ctrl/rudder_setpoint" />
+            <param name="topic_to_actuator" value="/actuator_input" />
+            <param name="limit_between_setpoints" value="0.01" />
+            <param name="loop_freq" value="10" />
+            <remap from="/actuator_input" to="/$(arg namespace)/core/thrust_vector_cmd"/>
+        </node>
+
+
+        <include file="$(find sam_basic_controllers)/launch/dynamic_depth_ctrl.launch">
+            <arg name="namespace" value="$(arg namespace)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/dynamic_heading_ctrl.launch">
+            <arg name="namespace" value="$(arg namespace)" />
+        </include>
+
+    </group>
+</group>
+
+</launch>

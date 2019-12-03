@@ -11,7 +11,7 @@
         <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
             <param name="odom_frame" value="$(arg namespace)_odom"/>
             <param name="base_frame" value="$(arg namespace)/base_link"/>
-            <param name="world_frame" value="$(arg namespace)_odom"/>
+            <param name="world_frame" value="world"/>
             <param name="loop_freq" value="50" />
         </node>
 

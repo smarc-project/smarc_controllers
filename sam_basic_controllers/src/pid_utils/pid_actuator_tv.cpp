@@ -9,20 +9,22 @@ sam_msgs::ThrusterAngles control_action;
 //std_msgs::Float64 control_action;
 double prev_control_msg1,prev_control_msg2,limit,freq;
 std::string topic_from_controller_1_,topic_from_controller_2_, topic_to_actuator_;
-
+bool message_received;
 
 void PIDCallback_Elevator(const std_msgs::Float64& control_msg)
 {
-  if(fabs(prev_control_msg1-control_msg.data) > limit) {
-    control_action.thruster_vertical_radians = control_msg.data;
+  if(abs(prev_control_msg1-control_msg.data) > limit) {
+    	  message_received=true;	
+	  control_action.thruster_vertical_radians = control_msg.data;
     }
     ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
 }
 
 void PIDCallback_Rudder(const std_msgs::Float64& control_msg)
 {
-   if(fabs(prev_control_msg2-control_msg.data) > limit) {
-    control_action.thruster_horizontal_radians = control_msg.data;
+   if(abs(prev_control_msg2-control_msg.data) > limit) {
+    	   message_received= true;
+	   control_action.thruster_horizontal_radians = control_msg.data;
     }
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
 }
@@ -31,6 +33,7 @@ int main(int argc, char** argv){
   ros::init(argc, argv, "pid_actuator_tv");
 
   ros::NodeHandle node;
+  message_received=false;
 
   ros::NodeHandle node_priv("~");
   node_priv.param<std::string>("topic_from_controller_1", topic_from_controller_1_, "control_action_elevator");
@@ -51,13 +54,14 @@ int main(int argc, char** argv){
 
   while (node.ok()){
 
-    control_action_pub.publish(control_action);
-    prev_control_msg1 = control_action.thruster_vertical_radians;
-    prev_control_msg2 = control_action.thruster_horizontal_radians;
-    //prev_control_msg = control_action.data;
-    ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: Elevator:%f Rudder:%f", control_action.thruster_vertical_radians,control_action.thruster_vertical_radians);
-  //  ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.data); //Gazebo
-
+    if (message_received) {
+	    	control_action_pub.publish(control_action);
+ 	    	prev_control_msg1 = control_action.thruster_vertical_radians;
+    		prev_control_msg2 = control_action.thruster_horizontal_radians;
+    		//prev_control_msg = control_action.data;
+    		ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: Elevator:%f Rudder:%f", control_action.thruster_vertical_radians,control_action.thruster_vertical_radians);
+  	//  ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.data); //Gazebo
+	}
     rate.sleep();
     ros::spinOnce();
 

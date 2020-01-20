@@ -39,6 +39,10 @@
             <arg name="namespace" value="$(arg namespace)" />
         </include>
 
+        <!--include file="$(find sam_basic_controllers)/launch/dynamic_roll_ctrl.launch" if="$(arg with_velocity)">
+            <arg name="namespace" value="$(arg namespace)" />
+        </include-->
+
     </group>
 </group>
 

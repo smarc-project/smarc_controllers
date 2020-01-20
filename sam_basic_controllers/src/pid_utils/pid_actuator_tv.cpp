@@ -13,7 +13,7 @@ std::string topic_from_controller_1_,topic_from_controller_2_, topic_to_actuator
 
 void PIDCallback_Elevator(const std_msgs::Float64& control_msg)
 {
-  if(abs(prev_control_msg1-control_msg.data) > limit) {
+  if(fabs(prev_control_msg1-control_msg.data) > limit) {
     control_action.thruster_vertical_radians = control_msg.data;
     }
     ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
@@ -21,7 +21,7 @@ void PIDCallback_Elevator(const std_msgs::Float64& control_msg)
 
 void PIDCallback_Rudder(const std_msgs::Float64& control_msg)
 {
-   if(abs(prev_control_msg2-control_msg.data) > limit) {
+   if(fabs(prev_control_msg2-control_msg.data) > limit) {
     control_action.thruster_horizontal_radians = control_msg.data;
     }
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);

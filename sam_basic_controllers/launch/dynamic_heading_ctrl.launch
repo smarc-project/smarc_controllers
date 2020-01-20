@@ -2,6 +2,14 @@
 
     <arg name="namespace" default="sam"/>
 
+    <node name="angle_wrapper" pkg="sam_basic_controllers" type="angle_wrapper" output="screen" >
+        <param name="feedback_topic" value="/$(arg namespace)/ctrl/yaw_feedback"/>
+        <param name="setpoint_topic" value="/$(arg namespace)/ctrl/yaw_setpoint"/>
+        <param name="angle_error_topic" value="/$(arg namespace)/ctrl/dynamic_heading/error"/>
+        <param name="zero_topic" value="/$(arg namespace)/ctrl/dynamic_heading/setpoint"/>
+        <param name="loop_freq" value="50" />
+    </node>
+
     <node name="controller1" pkg="pid" type="controller" ns="dynamic_heading" output="screen" >
       <param name="Kp" value="1.0" />
       <param name="Ki" value="0.0" />
@@ -12,7 +20,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/yaw_feedback" />
+      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/dynamic_heading/error" />
       <param name="topic_from_controller" value="r_setpoint" />
       <!-- NOTE to Harsha: this is very weird -->
       <remap from="setpoint" to="setpoint" />

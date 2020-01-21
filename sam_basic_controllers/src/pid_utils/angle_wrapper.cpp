@@ -27,10 +27,10 @@ int main(int argc, char** argv){
   ros::NodeHandle node;
 
   ros::NodeHandle node_priv("~");
-  node_priv.param<std::string>("setpoint_topic", setpoint_topic_, "/sam/ctrl/yaw_setpoint");
+  node_priv.param<std::string>("setpoint_topic", setpoint_topic_, "/sam/ctrl/dynamic_heading/setpoint");
   node_priv.param<std::string>("feedback_topic", feedback_topic_, "/sam/ctrl/yaw_feedback");
-  node_priv.param<std::string>("angle_error_topic", angle_error_topic_, "/sam/ctrl/yaw_error");
-  node_priv.param<std::string>("zero_topic", zero_setpoint_topic_, "/sam/ctrl/zero_error");
+  node_priv.param<std::string>("angle_error_topic", angle_error_topic_, "/sam/ctrl/dynamic_heading/angle_error");
+  node_priv.param<std::string>("zero_topic", zero_setpoint_topic_, "/sam/ctrl/dynamic_heading/zero_error");
   node_priv.param<double>("loop_freq", freq, 50);
   //initiate subscribers
 
@@ -47,8 +47,8 @@ int main(int argc, char** argv){
 
         error= setpoint-feedback;
 
-        if(error>(3.14))
-            error= error-3.14;
+        if(error>3.141516)
+            error= -(2*3.141516 - error);
 
         angle_error_pub.publish(error);
         zero_setpoint_pub.publish(0.0);

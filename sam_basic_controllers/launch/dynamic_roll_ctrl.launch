@@ -2,10 +2,10 @@
 
     <arg name="namespace" default="sam"/>
 
-    <node name="roll_controller" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
+    <node name="roll_controller" pkg="pid" type="controller" ns="sam/ctrl/dynamic_roll" output="screen" >
       <param name="Kp" value="500" />
-      <param name="Ki" value="0.0" />
-      <param name="Kd" value="0.0" />
+      <param name="Ki" value="1.0" />
+      <param name="Kd" value="10.0" />
       <param name="upper_limit" value="500" />
       <param name="lower_limit" value="-500" />
       <param name="windup_limit" value="100" />

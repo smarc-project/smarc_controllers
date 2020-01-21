@@ -8,19 +8,19 @@
 <group ns="$(arg namespace)">
     <group ns="ctrl">
 
-        <!--node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
-            <param name="odom_frame" value="$(arg namespace)_odom"/>
-            <param name="base_frame" value="$(arg namespace)/base_link"/>
-            <param name="world_frame" value="world"/>
-            <param name="loop_freq" value="50" />
-        </node-->
-
-        <node name="tf_listener" pkg="state_feedback" type="tf_listener" output="screen" >
+        <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
             <param name="odom_frame" value="$(arg namespace)_odom"/>
             <param name="base_frame" value="$(arg namespace)/base_link"/>
             <param name="world_frame" value="world"/>
             <param name="loop_freq" value="50" />
         </node>
+
+        <!--node name="tf_listener" pkg="state_feedback" type="tf_listener" output="screen" >
+            <param name="odom_frame" value="$(arg namespace)_odom"/>
+            <param name="base_frame" value="$(arg namespace)/base_link"/>
+            <param name="world_frame" value="world"/>
+            <param name="loop_freq" value="50" />
+        </node-->
 
         <include file="$(find sam_basic_controllers)/launch/static_depth_ctrl.launch" if="$(arg with_depth)">
             <arg name="namespace" value="$(arg namespace)" />

@@ -61,9 +61,7 @@ int main(int argc, char** argv){
 						}
 				if(setpoint_received)
 						zero_setpoint_pub.publish(0.0);
-
-
-
+						
     rate.sleep();
     ros::spinOnce();
 

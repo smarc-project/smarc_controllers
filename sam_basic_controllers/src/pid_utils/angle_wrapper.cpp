@@ -45,7 +45,7 @@ int main(int argc, char** argv){
 
   while (node.ok()){
 
-        error= setpoint-feedback;
+        error= -(setpoint-feedback);
 
         if(error>3.141516)
             error= -(2*3.141516 - error);

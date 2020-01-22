@@ -11,25 +11,26 @@ bool setpoint_received, feedback_received;
 
 void FeedbackCallback(const std_msgs::Float64& angle_msg)
 {
-	  feedback = angle_msg.data;
-		feedback_received = true;
-		ROS_INFO_THROTTLE(1.0, "[angle_wrapper]  Feedback: %f", angle_msg.data);
+	feedback = angle_msg.data;
+	feedback_received = true;
+	ROS_INFO_THROTTLE(1.0, "[angle_wrapper]  Feedback: %f", angle_msg.data);
 }
 
 void SetpointCallback(const std_msgs::Float64& angle_msg)
 {
-	  setpoint = angle_msg.data;
-		setpoint_received = true;
-    ROS_INFO_THROTTLE(1.0, "[angle_wrapper]  Setpoint: %f", angle_msg.data);
+	setpoint = angle_msg.data;
+	setpoint_received = true;
+    	ROS_INFO_THROTTLE(1.0, "[angle_wrapper]  Setpoint: %f", angle_msg.data);
 }
 
 
 int main(int argc, char** argv){
+  
   ros::init(argc, argv, "angle_wrapper");
 
   ros::NodeHandle node;
-	feedback_received = false;
-	setpoint_received = false;
+  feedback_received = false;
+  setpoint_received = false;
 
   ros::NodeHandle node_priv("~");
   node_priv.param<std::string>("setpoint_topic", setpoint_topic_, "/sam/ctrl/dynamic_heading/setpoint");
@@ -53,14 +54,14 @@ int main(int argc, char** argv){
         error= -(setpoint-feedback);
 
         if(error>3.141516)
-            error= -(2*3.141516 - error);
+            	error= -(2*3.141516 - error);
 
         if(feedback_received){
-						angle_error_pub.publish(error);
-						ROS_INFO_THROTTLE(1.0, "[angle_wrapper] Angle Error:%f", error);
-						}
-				if(setpoint_received)
-						zero_setpoint_pub.publish(0.0);
+		angle_error_pub.publish(error);
+		ROS_INFO_THROTTLE(1.0, "[angle_wrapper] Angle Error:%f", error);
+		}
+	if(setpoint_received)
+		zero_setpoint_pub.publish(0.0);
 						
     rate.sleep();
     ros::spinOnce();

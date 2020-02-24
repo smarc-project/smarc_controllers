@@ -11,7 +11,7 @@
       <remap from="/actuator_input" to="/$(arg namespace)/core/tcg_cmd"/>
     </node>
 
-    <node name="controller" pkg="pid" type="controller" ns="tcg" output="screen" >
+    <node name="tcg_pid" pkg="pid" type="controller" ns="tcg" output="screen" >
       <param name="Kp" value="5.0" />
       <param name="Ki" value="5.0" />
       <param name="Kd" value="2.0" />

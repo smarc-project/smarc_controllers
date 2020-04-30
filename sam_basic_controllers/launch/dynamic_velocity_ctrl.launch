@@ -2,7 +2,7 @@
 
     <arg name="namespace" default="sam"/>
 
-    <node name="roll_controller" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
+    <node name="dyn_vel_roll_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
       <param name="Kp" value="500" />
       <param name="Ki" value="0.0" />
       <param name="Kd" value="0.0" />
@@ -20,7 +20,7 @@
       <remap from="control_effort" to="/control_effort" /-->
      </node>
 
-     <node name="vel_controller" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
+     <node name="dyn_vel_u_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
        <param name="Kp" value="1000" />
        <param name="Ki" value="0.0" />
        <param name="Kd" value="0.0" />

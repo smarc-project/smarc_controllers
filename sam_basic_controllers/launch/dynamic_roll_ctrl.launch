@@ -1,0 +1,24 @@
+<launch>
+
+    <arg name="namespace" default="sam"/>
+
+    <node name="dyn_roll_pid" pkg="pid" type="controller" ns="sam/ctrl/dynamic_roll" output="screen" >
+      <param name="Kp" value="500" />
+      <param name="Ki" value="1.0" />
+      <param name="Kd" value="10.0" />
+      <param name="upper_limit" value="500" />
+      <param name="lower_limit" value="-500" />
+      <param name="windup_limit" value="100" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
+      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/roll_feedback" />
+      <param name="topic_from_controller" value="/$(arg namespace)/ctrl/rpm_diff" />
+      <remap from="setpoint" to="roll_setpoint" />
+      <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
+      <!--remap from="/plant_state_pitch" to="state" />
+      <remap from="control_effort" to="/control_effort" /-->
+     </node>
+
+
+</launch>

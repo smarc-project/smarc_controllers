@@ -1,30 +1,37 @@
 <launch>
 
-<arg name="namespace" default="sam"/>
+<arg name="robot_name" default="sam"/>
 <arg name="with_roll" default="true"/>
 <arg name="with_pitch" default="true"/>
 <arg name="with_depth" default="true"/>
 
-<group ns="$(arg namespace)">
+<group ns="$(arg robot_name)">
     <group ns="ctrl">
 
         <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
-            <param name="odom_frame" value="$(arg namespace)_odom"/>
-            <param name="base_frame" value="$(arg namespace)/base_link"/>
+            <param name="odom_frame" value="$(arg robot_name)_odom"/>
+            <param name="base_frame" value="$(arg robot_name)/base_link"/>
             <param name="world_frame" value="world"/>
             <param name="loop_freq" value="50" />
         </node>
 
+        <!--node name="tf_listener" pkg="state_feedback" type="tf_listener" output="screen" >
+            <param name="odom_frame" value="$(arg robot_name)_odom"/>
+            <param name="base_frame" value="$(arg robot_name)/base_link"/>
+            <param name="world_frame" value="world"/>
+            <param name="loop_freq" value="50" />
+        </node-->
+
         <include file="$(find sam_basic_controllers)/launch/static_depth_ctrl.launch" if="$(arg with_depth)">
-            <arg name="namespace" value="$(arg namespace)" />
+            <arg name="namespace" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/static_pitch_ctrl.launch" if="$(arg with_pitch)">
-            <arg name="namespace" value="$(arg namespace)" />
+            <arg name="namespace" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/static_roll_ctrl.launch" if="$(arg with_roll)">
-            <arg name="namespace" value="$(arg namespace)" />
+            <arg name="namespace" value="$(arg robot_name)" />
         </include>
 
     </group>

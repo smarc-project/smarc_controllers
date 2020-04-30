@@ -10,13 +10,14 @@ sam_msgs::BallastAngles control_action;
 //std_msgs::Float64 control_action;
 double prev_control_msg1,prev_control_msg2,limit, freq;
 std::string topic_from_controller_1_,topic_from_controller_2_, topic_to_actuator_;
-
+bool message_received;
 
 void PIDCallback1(const std_msgs::Float64& control_msg)
 {
   if(abs(prev_control_msg1-control_msg.data) > limit) {
-    control_action.weight_1_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data; // We will use +-2Pi radians, so the +-50offset is not necessary
-    //control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo
+	control_action.weight_1_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data; // We will use +-2Pi radians, so the +-50offset is not necessary
+    	message_received = true;
+	  //control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo
     }
     ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
 }
@@ -24,8 +25,9 @@ void PIDCallback1(const std_msgs::Float64& control_msg)
 void PIDCallback2(const std_msgs::Float64& control_msg)
 {
    if(abs(prev_control_msg2-control_msg.data) > limit) {
-    control_action.weight_2_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data;
-      //control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo
+    	control_action.weight_2_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data;
+      	message_received = true;
+	//control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo
     }
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
 }
@@ -34,6 +36,7 @@ int main(int argc, char** argv){
   ros::init(argc, argv, "pid_actuator");
 
   ros::NodeHandle node;
+  message_received = false;
 
   ros::NodeHandle node_priv("~");
   node_priv.param<std::string>("topic_from_controller_1", topic_from_controller_1_, "control_action_weight1");
@@ -55,13 +58,14 @@ int main(int argc, char** argv){
 
   while (node.ok()){
 
-    control_action_pub.publish(control_action);
-    prev_control_msg1 = control_action.weight_1_offset_radians;
-    prev_control_msg2 = control_action.weight_2_offset_radians;
-    //prev_control_msg = control_action.data;
-    ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: W1:%f W2:%f", control_action.weight_1_offset_radians,control_action.weight_2_offset_radians);
-  //  ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.data); //Gazebo
-
+	if (message_received) {  
+    		control_action_pub.publish(control_action);
+    		prev_control_msg1 = control_action.weight_1_offset_radians;
+    		prev_control_msg2 = control_action.weight_2_offset_radians;
+    		//prev_control_msg = control_action.data;
+    		ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: W1:%f W2:%f", control_action.weight_1_offset_radians,control_action.weight_2_offset_radians);
+  		//  ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.data); //Gazebo
+ 	}
     rate.sleep();
     ros::spinOnce();
 

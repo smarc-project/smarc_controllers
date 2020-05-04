@@ -1,14 +1,14 @@
 <launch>
 
-    <arg name="namespace" default="sam"/>
+    <arg name="robot_name" default="sam"/>
 
     <node name="pid_actuator_lcg" pkg="sam_basic_controllers" type="pid_actuator_trim" ns="lcg" >
       <param name="topic_from_controller" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
-      <param name="pid_enable_topic" value="/$(arg namespace)/ctrl/lcg/pid_enable" />
+      <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/lcg/pid_enable" />
       <param name="limit_between_setpoints" value="1" />
       <param name="loop_freq" value="50" />
-      <remap from="/actuator_input" to="/$(arg namespace)/core/lcg_cmd"/>
+      <remap from="/actuator_input" to="/$(arg robot_name)/core/lcg_cmd"/>
     </node>
 
     <node name="lcg_pid" pkg="pid" type="controller" ns="lcg" output="screen" >

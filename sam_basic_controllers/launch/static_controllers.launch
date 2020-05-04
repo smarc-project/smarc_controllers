@@ -23,15 +23,15 @@
         </node-->
 
         <include file="$(find sam_basic_controllers)/launch/static_depth_ctrl.launch" if="$(arg with_depth)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/static_pitch_ctrl.launch" if="$(arg with_pitch)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/static_roll_ctrl.launch" if="$(arg with_roll)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
     </group>

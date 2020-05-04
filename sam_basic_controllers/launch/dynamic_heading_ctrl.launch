@@ -1,12 +1,12 @@
 <launch>
 
-    <arg name="namespace" default="sam"/>
+    <arg name="robot_name" default="sam"/>
 
     <node name="angle_wrapper" pkg="sam_basic_controllers" type="angle_wrapper" ns="dynamic_heading" output="screen" >
-        <param name="feedback_topic" value="/$(arg namespace)/ctrl/yaw_feedback"/>
-        <param name="setpoint_topic" value="/$(arg namespace)/ctrl/dynamic_heading/setpoint"/>
-        <param name="angle_error_topic" value="/$(arg namespace)/ctrl/dynamic_heading/angle_error"/>
-        <param name="zero_topic" value="/$(arg namespace)/ctrl/dynamic_heading/zero_setpoint"/>
+        <param name="feedback_topic" value="/$(arg robot_name)/ctrl/yaw_feedback"/>
+        <param name="setpoint_topic" value="/$(arg robot_name)/ctrl/dynamic_heading/setpoint"/>
+        <param name="angle_error_topic" value="/$(arg robot_name)/ctrl/dynamic_heading/angle_error"/>
+        <param name="zero_topic" value="/$(arg robot_name)/ctrl/dynamic_heading/zero_setpoint"/>
         <param name="loop_freq" value="50" />
     </node>
 
@@ -20,7 +20,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/dynamic_heading/angle_error" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/dynamic_heading/angle_error" />
       <param name="topic_from_controller" value="r_setpoint" />
       <!-- NOTE to Harsha: this is very weird -->
       <remap from="setpoint" to="zero_setpoint" />
@@ -39,8 +39,8 @@
        <param name="max_loop_frequency" value="100.0" />
        <param name="min_loop_frequency" value="100.0" />
        <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-       <param name="topic_from_plant" value="/$(arg namespace)/ctrl/r_feedback" />
-       <param name="topic_from_controller" value="/$(arg namespace)/ctrl/rudder_setpoint" />
+       <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/r_feedback" />
+       <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
        <remap from="setpoint" to="r_setpoint" />
        <!--remap from="/plant_state_pitch" to="state" />
        <remap from="control_effort" to="/control_effort" /-->

@@ -30,19 +30,19 @@
 
 
         <include file="$(find sam_basic_controllers)/launch/dynamic_depth_ctrl.launch" if="$(arg with_depth)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/dynamic_heading_ctrl.launch" if="$(arg with_heading)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
         <include file="$(find sam_basic_controllers)/launch/dynamic_velocity_ctrl.launch" if="$(arg with_velocity)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
         <!--include file="$(find sam_basic_controllers)/launch/dynamic_roll_ctrl.launch" if="$(arg with_velocity)">
-            <arg name="namespace" value="$(arg robot_name)" />
+            <arg name="robot_name" value="$(arg robot_name)" />
         </include-->
 
     </group>

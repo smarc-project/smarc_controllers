@@ -31,8 +31,8 @@
 
      <node name="dyn_heading_pid_2" pkg="pid" type="controller" ns="dynamic_heading" output="screen" >
        <param name="Kp" value="-0.5" />
-       <param name="Ki" value="-0.0" />
-       <param name="Kd" value="-0.02" />
+       <param name="Ki" value="-0.01" />
+       <param name="Kd" value="-0.05" />
        <param name="upper_limit" value="0.1" />
        <param name="lower_limit" value="-0.1" />
        <param name="windup_limit" value="100" />

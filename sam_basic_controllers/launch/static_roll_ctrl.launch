@@ -6,6 +6,7 @@
       <param name="topic_from_controller_1" value="control_action" />
       <param name="topic_from_controller_2" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
+      <param name="pid_enable_topic" value="/$(arg namespace)/ctrl/tcg/pid_enable" />
       <param name="limit_between_setpoints" value="0.01" />
       <param name="loop_freq" value="50" />
       <remap from="/actuator_input" to="/$(arg namespace)/core/tcg_cmd"/>

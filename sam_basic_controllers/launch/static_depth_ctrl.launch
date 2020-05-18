@@ -1,18 +1,19 @@
 <launch>
 
-    <arg name="namespace" default="sam"/>
+    <arg name="robot_name" default="sam"/>
 
     <node name="pid_actuator_vbs" pkg="sam_basic_controllers" type="pid_actuator_trim" ns="vbs" >
       <param name="topic_from_controller" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
+      <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/vbs/pid_enable" />
       <param name="limit_between_setpoints" value="1" />
       <param name="loop_freq" value="50" />
-      <remap from="/actuator_input" to="/$(arg namespace)/core/vbs_cmd"/>
+      <remap from="/actuator_input" to="/$(arg robot_name)/core/vbs_cmd"/>
     </node>
 
     <node name="vbs_pid" pkg="pid" type="controller" ns="vbs" output="screen" >
       <param name="Kp" value="50.0" />
-      <param name="Ki" value="1" />
+      <param name="Ki" value="0.2" />
       <param name="Kd" value="5" />
       <param name="upper_limit" value="50.0" />
       <param name="lower_limit" value="-50.0" />
@@ -20,7 +21,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/depth_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/depth_feedback" />
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />
       <!--remap from="/plant_state_pitch" to="state" />

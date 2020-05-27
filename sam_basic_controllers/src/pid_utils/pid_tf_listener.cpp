@@ -18,11 +18,11 @@ int main(int argc, char** argv){
 
   std::string base_frame;
   std::string odom_frame;
-  std::string world_frame;
+  std::string utm_frame;
   double freq;
 
   node.param<std::string>(node_name + "/base_frame", base_frame, "base_link");
-  node.param<std::string>(node_name + "/world_frame", world_frame, "world");
+  node.param<std::string>(node_name + "/utm_frame", utm_frame, "utm");
   node.param<std::string>(node_name + "/odom_frame", odom_frame, "odom");
   node.param<double>("loop_freq", freq, 10);
 
@@ -54,10 +54,10 @@ int main(int argc, char** argv){
   while (node.ok()){
     tf::StampedTransform transform;
     geometry_msgs::Twist  twist;
-    try{//transform between world and required frame
-      listener.lookupTransform(world_frame, base_frame,
+    try{//transform between utm and required frame
+      listener.lookupTransform(utm_frame, base_frame,
                                ros::Time(0), transform);
-      listener.lookupTwist(world_frame, base_frame,
+      listener.lookupTwist(utm_frame, base_frame,
                                ros::Time(0), ros::Duration(2.0), twist);
     }
 

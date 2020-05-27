@@ -33,6 +33,10 @@
         <include file="$(find sam_basic_controllers)/launch/static_roll_ctrl.launch" if="$(arg with_roll)">
             <arg name="robot_name" value="$(arg robot_name)" />
         </include>
+        
+        <!--include file="$(find sam_basic_controllers)/launch/static_alt_ctrl.launch" if="$(arg with_alt)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include-->
 
     </group>
 </group>

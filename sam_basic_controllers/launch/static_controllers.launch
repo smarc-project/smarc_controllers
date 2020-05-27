@@ -9,9 +9,9 @@
     <group ns="ctrl">
 
         <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
-            <param name="odom_frame" value="$(arg robot_name)_odom"/>
+            <param name="odom_frame" value="$(arg robot_name)/odom"/>
             <param name="base_frame" value="$(arg robot_name)/base_link"/>
-            <param name="world_frame" value="world"/>
+            <param name="world_frame" value="$(arg robot_name)/odom"/>"/>
             <param name="loop_freq" value="50" />
         </node>
 
@@ -33,6 +33,10 @@
         <include file="$(find sam_basic_controllers)/launch/static_roll_ctrl.launch" if="$(arg with_roll)">
             <arg name="robot_name" value="$(arg robot_name)" />
         </include>
+
+        <!--include file="$(find sam_basic_controllers)/launch/static_alt_ctrl.launch" if="$(arg with_alt)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include-->
 
     </group>
 </group>

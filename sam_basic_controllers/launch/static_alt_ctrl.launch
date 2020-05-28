@@ -2,7 +2,7 @@
 
     <arg name="robot_name" default="sam"/>
 
-    <node name="pid_actuator_vbs" pkg="sam_basic_controllers" type="pid_actuator_trim" ns="vbs_alt" >
+    <node name="pid_actuator_vbs_alt" pkg="sam_basic_controllers" type="pid_actuator_trim" ns="vbs_alt" >
       <param name="topic_from_controller" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
       <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/vbs_alt/pid_enable" />
@@ -12,9 +12,9 @@
     </node>
 
     <node name="vbs_alt_pid" pkg="pid" type="controller" ns="vbs_alt" output="screen" >
-      <param name="Kp" value="50.0" />
-      <param name="Ki" value="0.2" />
-      <param name="Kd" value="5" />
+      <param name="Kp" value="-50.0" />
+      <param name="Ki" value="-0.2" />
+      <param name="Kd" value="-5" />
       <param name="upper_limit" value="50.0" />
       <param name="lower_limit" value="-50.0" />
       <param name="windup_limit" value="100" />

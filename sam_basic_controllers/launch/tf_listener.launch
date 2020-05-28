@@ -6,7 +6,8 @@
 	    <param name="odom_frame" value="$(arg robot_name)_odom"/>
 	    <param name="base_frame" value="sam/base_link"/>
 	    <param name="world_frame" value="world"/>
-      <param name="loop_freq" value="10" />
+	    <param name="topic_from_dvl" value="$(arg robot_name)/core/dvl"/>
+            <param name="loop_freq" value="10" />
     </node>
 
 </launch>

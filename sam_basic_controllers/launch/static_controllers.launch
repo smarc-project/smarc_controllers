@@ -18,7 +18,7 @@
         <!--node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
             <param name="odom_frame" value="$(arg robot_name)/odom"/>
             <param name="base_frame" value="$(arg robot_name)/base_link"/>
-            <param name="utm_frame" value="utm"/>
+             <param name="utm_frame" value="utm"/>
             <param name="topic_from_dvl" value="/$(arg robot_name)/core/dvl"/>
             <param name="loop_freq" value="50" />
         </node-->

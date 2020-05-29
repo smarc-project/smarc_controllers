@@ -3,11 +3,10 @@
     <arg name="robot_name" default="sam"/>
 
     <node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
-	    <param name="odom_frame" value="$(arg robot_name)_odom"/>
+	    <param name="odom_frame" value="$(arg robot_name)/odom"/>
 	    <param name="base_frame" value="sam/base_link"/>
-	    <param name="world_frame" value="world"/>
-	    <param name="topic_from_dvl" value="$(arg robot_name)/core/dvl"/>
-            <param name="loop_freq" value="10" />
+	    <param name="utm_frame" value="utm"/>
+      <param name="loop_freq" value="10" />
     </node>
 
 </launch>

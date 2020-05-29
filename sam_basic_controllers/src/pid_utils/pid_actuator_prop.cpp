@@ -68,8 +68,8 @@ int main(int argc, char** argv){
   while (node.ok()){
 
     if (message_received && enable_state) {
-      control_action.thruster_1_rpm = mean_prop_rpm + 0.5*rpm_diff;
-      control_action.thruster_2_rpm = mean_prop_rpm - 0.5*rpm_diff;
+      control_action.thruster_1_rpm = (mean_prop_rpm + 0.5*rpm_diff)*100;
+      control_action.thruster_2_rpm = (mean_prop_rpm - 0.5*rpm_diff)*100;
       control_action_pub.publish(control_action);
     }
 
@@ -77,7 +77,7 @@ int main(int argc, char** argv){
     //prev_control_msg2 = control_action.thruster_2_rpm;
 
     //prev_control_msg = control_action.data;
-    ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control sent: Prop1:%f Prop2:%f", control_action.thruster_1_rpm,control_action.thruster_2_rpm);
+    ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control sent: Prop1:%i Prop2:%i", control_action.thruster_1_rpm,control_action.thruster_2_rpm);
   //  ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.data); //Gazebo
 
     rate.sleep();

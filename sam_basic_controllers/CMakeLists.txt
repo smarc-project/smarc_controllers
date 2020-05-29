@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   cola2_msgs
+  nav_msgs
 #   uavcan_ros_bridge
 )
 
@@ -205,6 +206,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+add_executable(odom_listener src/pid_utils/odom_listener.cpp)
 add_executable(pid_tf_listener src/pid_utils/pid_tf_listener.cpp)
 add_executable(pid_actuator_trim src/pid_utils/pid_actuator_trim.cpp)
 add_executable(pid_actuator_tcg src/pid_utils/pid_actuator_tcg.cpp)
@@ -212,12 +214,14 @@ add_executable(pid_actuator_tv src/pid_utils/pid_actuator_tv.cpp)
 add_executable(pid_actuator_prop src/pid_utils/pid_actuator_prop.cpp)
 
 
+add_dependencies(odom_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_tf_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_trim ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_tcg ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_tv ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_prop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+target_link_libraries(odom_listener ${catkin_LIBRARIES})
 target_link_libraries(pid_tf_listener ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_trim ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tcg ${catkin_LIBRARIES})

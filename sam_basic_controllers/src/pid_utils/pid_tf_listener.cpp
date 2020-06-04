@@ -17,7 +17,6 @@ void DVLCallback(const cola2_msgs::DVL& dvl_msg)
     ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener]  Altitude from DVL: %f", dvl_msg.altitude);
 }
 
-
 int main(int argc, char** argv){
 
   std::string node_name = "pid_tf_listener";

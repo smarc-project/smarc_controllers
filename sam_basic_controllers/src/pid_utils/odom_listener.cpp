@@ -48,7 +48,7 @@ int main(int argc, char** argv){
   std::string node_name = "odom_listener";
   ros::init(argc, argv, node_name);
 
-  ros::NodeHandle node;
+  ros::NodeHandle node("~");
 
   std::string odom_topic_;
   std::string dvl_topic_;

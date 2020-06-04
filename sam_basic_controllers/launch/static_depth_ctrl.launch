@@ -6,6 +6,7 @@
       <param name="topic_from_controller" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
       <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/vbs/pid_enable" />
+      <param name="abort_topic" value="/$(arg robot_name)/abort" />
       <param name="limit_between_setpoints" value="1" />
       <param name="loop_freq" value="50" />
       <remap from="/actuator_input" to="/$(arg robot_name)/core/vbs_cmd"/>
@@ -21,7 +22,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/depth_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/depth_feedback" />
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />
       <!--remap from="/plant_state_pitch" to="state" />

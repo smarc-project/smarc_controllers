@@ -1,15 +1,15 @@
 <launch>
 
-    <arg name="namespace" default="sam"/>
+    <arg name="robot_name" default="sam"/>
 
     <node name="pid_actuator_tcg" pkg="sam_basic_controllers" type="pid_actuator_tcg" ns="tcg" >
       <param name="topic_from_controller_1" value="control_action" />
       <param name="topic_from_controller_2" value="control_action" />
       <param name="topic_to_actuator" value="/actuator_input" />
-      <param name="pid_enable_topic" value="/$(arg namespace)/ctrl/tcg/pid_enable" />
+      <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/tcg/pid_enable" />
       <param name="limit_between_setpoints" value="0.01" />
       <param name="loop_freq" value="50" />
-      <remap from="/actuator_input" to="/$(arg namespace)/core/tcg_cmd"/>
+      <remap from="/actuator_input" to="/$(arg robot_name)/core/tcg_cmd"/>
     </node>
 
     <node name="tcg_pid" pkg="pid" type="controller" ns="tcg" output="screen" >
@@ -22,7 +22,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!-- CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! -->
-      <param name="topic_from_plant" value="/$(arg namespace)/ctrl/roll_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/roll_feedback" />
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />
       <!--remap from="/plant_state_pitch" to="state" />

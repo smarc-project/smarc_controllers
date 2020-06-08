@@ -6,8 +6,16 @@
 //#include <tf2_msgs/TFMessage.h>
 //#include <geometry_msgs/Quaternion.h>
 #include <tf/tf.h>
+#include <cola2_msgs/DVL.h>
 
+std_msgs::Float64 current_alt;
 
+//Callback to read altitude from DVL
+void DVLCallback(const cola2_msgs::DVL& dvl_msg)
+{
+    current_alt.data = dvl_msg.altitude;
+    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener]  Altitude from DVL: %f", dvl_msg.altitude);
+}
 
 int main(int argc, char** argv){
 
@@ -19,12 +27,17 @@ int main(int argc, char** argv){
   std::string base_frame;
   std::string odom_frame;
   std::string utm_frame;
+  std::string topic_from_dvl_;
   double freq;
 
   node.param<std::string>(node_name + "/base_frame", base_frame, "base_link");
   node.param<std::string>(node_name + "/utm_frame", utm_frame, "utm");
   node.param<std::string>(node_name + "/odom_frame", odom_frame, "odom");
+  node.param<std::string>("topic_from_dvl", topic_from_dvl_, "/sam/core/dvl");
   node.param<double>("loop_freq", freq, 10);
+
+  //initiate subscribers
+  ros::Subscriber dvl_sub = node.subscribe(topic_from_dvl_, 1, DVLCallback);
 
 //initiate publishers
   ros::Publisher feedback_pitch = node.advertise<std_msgs::Float64>("pitch_feedback", freq);
@@ -39,6 +52,7 @@ int main(int argc, char** argv){
   ros::Publisher feedback_p = node.advertise<std_msgs::Float64>("p_feedback", freq);
   ros::Publisher feedback_q = node.advertise<std_msgs::Float64>("q_feedback", freq);
   ros::Publisher feedback_r = node.advertise<std_msgs::Float64>("r_feedback", freq);
+  ros::Publisher feedback_alt = node.advertise<std_msgs::Float64>("alt_feedback", freq);
 
 //Variable initialization
   tf::TransformListener listener;
@@ -102,10 +116,14 @@ int main(int argc, char** argv){
     feedback_q.publish(current_q);
     feedback_r.publish(current_r);
 
+    //Publish DVL altitude
+    feedback_alt.publish(current_alt);
 
-    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f, u: %f, v: %f, w: %f, p: %f, q: %f, r: %f ", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data, current_u.data, current_v.data, current_w.data, current_p.data, current_q.data, current_r.data);
+
+    ROS_INFO_THROTTLE(1.0, "[ pid_tf_listener ] roll: %f, pitch: %f, yaw: %f, depth: %f, x: %f, y: %f, u: %f, v: %f, w: %f, p: %f, q: %f, r: %f alt:%f", current_roll.data,current_pitch.data,current_yaw.data,current_depth.data, current_x.data, current_y.data, current_u.data, current_v.data, current_w.data, current_p.data, current_q.data, current_r.data, current_alt.data);
 
     rate.sleep();
+    ros::spinOnce();
   }
   return 0;
 };

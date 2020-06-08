@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="robot_name" default="sam"/>
+
+    <node name="odom_listener" pkg="sam_basic_controllers" type="odom_listener" output="screen" >
+	    <param name="odom_topic" value="$(arg robot_name)/dr/local/odom/filtered"/>
+	    <param name="topic_from_dvl" value="$(arg robot_name)/core/dvl"/>
+        <param name="loop_freq" value="10" />
+    </node>
+
+</launch>

@@ -9,7 +9,7 @@
 
 sam_msgs::PercentStamped control_action;
 double prev_control_msg,limit, freq;
-std::string topic_from_controller_, topic_to_actuator_,pid_enable_topic_;
+std::string topic_from_controller_, topic_to_actuator_,pid_enable_topic_,abort_topic_;
 bool message_received;
 bool emergency_state, enable_state;
 
@@ -44,12 +44,13 @@ int main(int argc, char** argv){
   node_priv.param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
   node_priv.param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
   node_priv.param<std::string>("pid_enable_topic", pid_enable_topic_, "pid_enable");
+  node_priv.param<std::string>("abort_topic", abort_topic_, "pid_enable");
   node_priv.param<double>("limit_between_setpoints", limit, 5);
   node_priv.param<double>("loop_freq", freq, 50);
 
   //initiate subscribers
   ros::Subscriber pid_action_sub = node.subscribe(topic_from_controller_, 1, PIDCallback);
-  ros::Subscriber abort_sub = node.subscribe("sam/abort", 10, abortCB);
+  ros::Subscriber abort_sub = node.subscribe(abort_topic_, 10, abortCB);
   ros::Subscriber enable_sub = node.subscribe(pid_enable_topic_, 10, enableCB);
 
   //initiate publishers

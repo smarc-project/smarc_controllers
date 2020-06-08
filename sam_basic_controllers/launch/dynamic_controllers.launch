@@ -4,6 +4,7 @@
 <arg name="with_heading" default="true"/>
 <arg name="with_depth" default="true"/>
 <arg name="with_velocity" default="true"/>
+<arg name="with_alt" default="true"/>
 
 <group ns="$(arg robot_name)">
     <group ns="ctrl">
@@ -41,10 +42,14 @@
             <arg name="robot_name" value="$(arg robot_name)" />
         </include>
 
-        <!--include file="$(find sam_basic_controllers)/launch/dynamic_roll_ctrl.launch" if="$(arg with_velocity)">
+        <!--include file="$(find sam_basic_controllers)/launch/dynamic_roll_ctrl.launch" if="$(arg with_roll)">
             <arg name="robot_name" value="$(arg robot_name)" />
         </include-->
 
+        <include file="$(find sam_basic_controllers)/launch/dynamic_alt_ctrl.launch" if="$(arg with_alt)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+        
     </group>
 </group>
 

@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
 #include <sam_msgs/PercentStamped.h>
-#include <std_msgs/Empty.h>
+//#include <std_msgs/Empty.h>
 #include <std_msgs/Bool.h>
 
 sam_msgs::PercentStamped control_action;
@@ -22,8 +22,11 @@ void PIDCallback(const std_msgs::Float64& control_msg)
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
 }
 
-void abortCB(const std_msgs::Empty& abort_msg){
-	emergency_state = true;
+void abortCB(const std_msgs::Bool& abort_msg){
+	if(abort_msg.data == true){
+	   emergency_state = true;
+	}
+	else emergency_state = false;
 }
 
 void enableCB(const std_msgs::Bool enable_msg){

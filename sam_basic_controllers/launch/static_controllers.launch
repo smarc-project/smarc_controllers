@@ -1,6 +1,7 @@
 <launch>
 
 <arg name="robot_name" default="sam"/>
+<!--SET either SIM or REAL to true depending on launch in simulation or real test-->
 <arg name="with_SIM" default="true"/>
 <arg name="with_REAL" default="false"/>
 

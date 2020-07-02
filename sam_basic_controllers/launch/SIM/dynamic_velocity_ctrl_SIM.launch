@@ -1,0 +1,43 @@
+<launch>
+
+    <arg name="robot_name" default="sam"/>
+    <!--The control action is scaled by 100 to reach the right RPM command -->
+
+    <node name="dyn_vel_roll_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
+      <param name="Kp" value="5.0" />
+      <param name="Ki" value="0.1" />
+      <param name="Kd" value="1.0" />
+      <param name="upper_limit" value="15" />
+      <param name="lower_limit" value="-15" />
+      <param name="windup_limit" value="10" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
+      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/roll_feedback" />
+      <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
+      <remap from="setpoint" to="roll_setpoint" />
+      <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
+      <!--remap from="/plant_state_pitch" to="state" />
+      <remap from="control_effort" to="/control_effort" /-->
+     </node>
+
+     <node name="dyn_vel_u_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
+       <param name="Kp" value="20.0" />
+       <param name="Ki" value="0.1" />
+       <param name="Kd" value="8.0" />
+       <param name="upper_limit" value="15" />
+       <param name="lower_limit" value="-15" />
+       <param name="windup_limit" value="10" />
+       <param name="max_loop_frequency" value="100.0" />
+       <param name="min_loop_frequency" value="100.0" />
+       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
+       <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/u_feedback" />
+       <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rpm_avg" />
+       <remap from="setpoint" to="u_setpoint" />
+       <!--remap from="/plant_state_pitch" to="state" />
+       <remap from="control_effort" to="/control_effort" /-->
+      </node>
+
+
+
+</launch>

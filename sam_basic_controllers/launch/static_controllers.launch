@@ -1,52 +1,16 @@
 <launch>
 
 <arg name="robot_name" default="sam"/>
-<arg name="with_roll" default="true"/>
-<arg name="with_pitch" default="true"/>
-<arg name="with_depth" default="true"/>
-<arg name="with_alt" default="true"/>
+<!--SET either SIM or REAL to true depending on launch in simulation or real test-->
+<arg name="with_SIM" default="true"/>
+<arg name="with_REAL" default="false"/>
 
-<group ns="$(arg robot_name)">
-    <group ns="ctrl">
+    <include file="$(find sam_basic_controllers)/launch/SIM/static_controllers_SIM.launch" if="$(arg with_SIM)">
+        <arg name="robot_name" value="$(arg robot_name)" />
+    </include>
 
-        <node name="odom_listener" pkg="sam_basic_controllers" type="odom_listener" output="screen" >
-	        <param name="odom_topic" value="/$(arg robot_name)/dr/local/odom/filtered"/>
-	        <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
-            <param name="loop_freq" value="10" />
-        </node>
-
-        <!--node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
-            <param name="odom_frame" value="$(arg robot_name)/odom"/>
-            <param name="base_frame" value="$(arg robot_name)/base_link"/>
-            <param name="utm_frame" value="utm"/>
-            <param name="topic_from_dvl" value="/$(arg robot_name)/core/dvl"/>
-            <param name="loop_freq" value="50" />
-        </node-->
-
-        <!--node name="tf_listener" pkg="state_feedback" type="tf_listener" output="screen" >
-            <param name="odom_frame" value="$(arg robot_name)_odom"/>
-            <param name="base_frame" value="$(arg robot_name)/base_link"/>
-            <param name="world_frame" value="world"/>
-            <param name="loop_freq" value="50" />
-        </node-->
-
-        <include file="$(find sam_basic_controllers)/launch/static_depth_ctrl.launch" if="$(arg with_depth)">
-            <arg name="robot_name" value="$(arg robot_name)" />
-        </include>
-
-        <include file="$(find sam_basic_controllers)/launch/static_pitch_ctrl.launch" if="$(arg with_pitch)">
-            <arg name="robot_name" value="$(arg robot_name)" />
-        </include>
-
-        <include file="$(find sam_basic_controllers)/launch/static_roll_ctrl.launch" if="$(arg with_roll)">
-            <arg name="robot_name" value="$(arg robot_name)" />
-        </include>
-        
-        <include file="$(find sam_basic_controllers)/launch/static_alt_ctrl.launch" if="$(arg with_alt)">
-            <arg name="robot_name" value="$(arg robot_name)" />
-        </include>
-
-    </group>
-</group>
+    <include file="$(find sam_basic_controllers)/launch/REAL/static_controllers_REAL.launch" if="$(arg with_REAL)">
+        <arg name="robot_name" value="$(arg robot_name)" />
+    </include>
 
 </launch>

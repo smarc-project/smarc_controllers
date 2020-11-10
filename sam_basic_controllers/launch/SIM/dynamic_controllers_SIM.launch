@@ -26,7 +26,7 @@
           <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable" />
           <param name="limit_between_setpoints" value="1" />
           <param name="loop_freq" value="10" />
-          <remap from="/actuator_input" to="/$(arg robot_name)/core/rpm_cmd"/>
+          <remap from="/actuator_input" to="/$(arg robot_name)/core/thrusters_cmd"/>
         </node>
 
 

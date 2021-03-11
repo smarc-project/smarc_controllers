@@ -22,11 +22,13 @@
         <node name="pid_actuator_prop" pkg="sam_basic_controllers" type="pid_actuator_prop" >
           <param name="topic_from_roll_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
           <param name="topic_from_vel_controller" value="/$(arg robot_name)/ctrl/rpm_avg" />
-          <param name="topic_to_actuator" value="/actuator_input" />
+          <param name="topic_to_actuator_1" value="/actuator_input_1" />
+          <param name="topic_to_actuator_2" value="/actuator_input_2" />
           <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable" />
           <param name="limit_between_setpoints" value="1" />
           <param name="loop_freq" value="10" />
-          <remap from="/actuator_input" to="/$(arg robot_name)/core/thrusters_cmd"/>
+          <remap from="/actuator_input_1" to="/$(arg robot_name)/core/thruster1_cmd"/>
+	  <remap from="/actuator_input_2" to="/$(arg robot_name)/core/thruster2_cmd"/>
         </node>
 
 

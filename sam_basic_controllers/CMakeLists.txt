@@ -180,6 +180,7 @@ include_directories(
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
+
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
 #   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
@@ -193,6 +194,8 @@ include_directories(
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
+
+
 
 #############
 ## Testing ##
@@ -228,3 +231,26 @@ target_link_libraries(pid_actuator_trim ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tcg ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tv ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_prop ${catkin_LIBRARIES})
+
+#install(TARGETS ${PROJECT_NAME} odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg pid_actuator_tv pid_actuator_prop
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
+
+install(TARGETS odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg pid_actuator_tv pid_actuator_prop
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
+
+#install(DIRECTORY src/pid_utils/
+#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#   FILES_MATCHING PATTERN "*.cpp"
+#   PATTERN ".svn" EXCLUDE
+# )
+
+#install(DIRECTORY launch/
+#  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+#  PATTERN ".svn" EXCLUDE
+#)

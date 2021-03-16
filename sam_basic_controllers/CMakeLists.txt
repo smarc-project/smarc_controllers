@@ -250,7 +250,7 @@ install(TARGETS odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg
 #   PATTERN ".svn" EXCLUDE
 # )
 
-#install(DIRECTORY launch/
-#  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-#  PATTERN ".svn" EXCLUDE
-#)
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  PATTERN ".svn" EXCLUDE
+)

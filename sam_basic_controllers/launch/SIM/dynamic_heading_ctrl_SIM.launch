@@ -14,7 +14,7 @@
       <param name="angle_error" value="true" />
       <param name="angle_wrap" value="2.0*3.14159." />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/dr/odom_listener/yaw" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/yaw" />
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/yaw" /-->
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/dynamic_heading/angle_error" /-->
       <param name="topic_from_controller" value="r_setpoint" />
@@ -31,7 +31,7 @@
        <param name="max_loop_frequency" value="100.0" />
        <param name="min_loop_frequency" value="100.0" />
        <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-       <param name="topic_from_plant" value="/$(arg robot_name)/dr/odom_listener/r" />
+       <param name="topic_from_plant" value="/$(arg robot_name)/dr/r" />
        <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/r_feedback" /-->
        <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
        <remap from="setpoint" to="r_setpoint" />

@@ -22,7 +22,7 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/dr/odom_listener/depth" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/depth" />
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/depth_feedback" /-->
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />

@@ -23,7 +23,7 @@
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
       <!--ADD ALTITUDE FEEDBACK TOPIC!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/dr/odom_listener/alt" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/alt" />
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/alt_feedback" /-->
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />

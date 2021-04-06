@@ -9,17 +9,18 @@
 <group ns="$(arg robot_name)">
     <group ns="ctrl">
 
+        <!-- Odom listener launched with dead reckoning!!-->
         <!--node name="odom_listener" pkg="tf_convenience_topics" type="odom_listener" output="screen" >
 	        <param name="odom_topic" value="/$(arg robot_name)/dr/local/odom/filtered"/>
 	        <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
             <param name="loop_freq" value="10" />
         </node-->
 
-        <node name="odom_listener" pkg="sam_basic_controllers" type="odom_listener" output="screen" >
+        <!--node name="odom_listener" pkg="sam_basic_controllers" type="odom_listener" output="screen" >
 	        <param name="odom_topic" value="/$(arg robot_name)/dr/local/odom/filtered"/>
 	        <param name="dvl_topic" value="/$(arg robot_name)/core/dvl"/>
             <param name="loop_freq" value="10" />
-        </node>
+        </node-->
 
         <!--node name="pid_tf_listener" pkg="sam_basic_controllers" type="pid_tf_listener" output="screen" >
             <param name="odom_frame" value="$(arg robot_name)/odom"/>

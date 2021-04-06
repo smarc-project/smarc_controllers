@@ -84,7 +84,7 @@
   <!-- <exec_depend>uavcan_ros_bridge</exec_depend> -->
 
   <depend>smarc_msgs</depend>
-  <depend>tf_convenience_topics</depend>
+  <!--depend>tf_convenience_topics</depend-->
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

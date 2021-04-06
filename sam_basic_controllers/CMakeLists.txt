@@ -16,9 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf
-  cola2_msgs
   nav_msgs
   smarc_msgs
+  tf_convenience_topics
 #   uavcan_ros_bridge
 )
 

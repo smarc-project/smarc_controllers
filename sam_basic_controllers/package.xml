@@ -57,7 +57,7 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
-  <build_depend>tf_convenience_topics</build_depend>
+  <!--build_depend>tf_convenience_topics</build_depend-->
 
   <!-- <build_depend>uavcan_ros_bridge</build_depend> -->
   <build_export_depend>dynamic_reconfigure</build_export_depend>
@@ -68,7 +68,7 @@
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
-  <build_export_depend>tf_convenience_topics</build_export_depend>
+  <!--build_export_depend>tf_convenience_topics</build_export_depend-->
 
   <!-- <build_export_depend>uavcan_ros_bridge</build_export_depend> -->
   <exec_depend>dynamic_reconfigure</exec_depend>
@@ -79,11 +79,12 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
-  <exec_depend>tf_convenience_topics</exec_depend>
+  <!--exec_depend>tf_convenience_topics</exec_depend-->
 
   <!-- <exec_depend>uavcan_ros_bridge</exec_depend> -->
 
   <depend>smarc_msgs</depend>
+  <depend>tf_convenience_topics</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

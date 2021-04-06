@@ -13,16 +13,17 @@
     </node>
 
     <node name="vbs_pid" pkg="pid" type="controller" ns="vbs" output="screen" >
-      <param name="Kp" value="50.0" />
-      <param name="Ki" value="0.2" />
-      <param name="Kd" value="5" />
+      <param name="Kp" value="70.0" />
+      <param name="Ki" value="4.0" />
+      <param name="Kd" value="0.0" />
       <param name="upper_limit" value="50.0" />
       <param name="lower_limit" value="-50.0" />
       <param name="windup_limit" value="10" />
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/depth_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/depth" />
+      <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/depth_feedback" /-->
       <param name="topic_from_controller" value="control_action" />
       <remap from="setpoint" to="setpoint" />
       <!--remap from="/plant_state_pitch" to="state" />

@@ -12,7 +12,8 @@
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/roll_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/roll" />
+      <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/roll_feedback" /-->
       <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
       <remap from="setpoint" to="roll_setpoint" />
       <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->

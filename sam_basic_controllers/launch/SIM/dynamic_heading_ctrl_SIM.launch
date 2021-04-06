@@ -3,9 +3,9 @@
     <arg name="robot_name" default="sam"/>
 
     <node name="dyn_heading_pid_1" pkg="pid" type="controller" ns="dynamic_heading" output="screen" >
-      <param name="Kp" value="1.0" />
-      <param name="Ki" value="0.0" />
-      <param name="Kd" value="0.01" />
+      <param name="Kp" value="-1.0" />
+      <param name="Ki" value="-0.0" />
+      <param name="Kd" value="-0.0" />
       <param name="upper_limit" value="0.5" />
       <param name="lower_limit" value="-0.5" />
       <param name="windup_limit" value="100" />
@@ -14,7 +14,8 @@
       <param name="angle_error" value="true" />
       <param name="angle_wrap" value="2.0*3.14159." />
       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-      <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/yaw_feedback" />
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/yaw" />
+      <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/yaw" /-->
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/dynamic_heading/angle_error" /-->
       <param name="topic_from_controller" value="r_setpoint" />
       <remap from="setpoint" to="setpoint" />
@@ -22,15 +23,16 @@
 
      <node name="dyn_heading_pid_2" pkg="pid" type="controller" ns="dynamic_heading" output="screen" >
        <param name="Kp" value="-0.5" />
-       <param name="Ki" value="-0.01" />
-       <param name="Kd" value="-0.05" />
+       <param name="Ki" value="-0.0" />
+       <param name="Kd" value="-0.01" />
        <param name="upper_limit" value="0.1" />
        <param name="lower_limit" value="-0.1" />
        <param name="windup_limit" value="100" />
        <param name="max_loop_frequency" value="100.0" />
        <param name="min_loop_frequency" value="100.0" />
        <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
-       <param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/r_feedback" />
+       <param name="topic_from_plant" value="/$(arg robot_name)/dr/r" />
+       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/r_feedback" /-->
        <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
        <remap from="setpoint" to="r_setpoint" />
       </node>

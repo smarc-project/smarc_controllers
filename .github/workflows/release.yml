@@ -59,4 +59,4 @@ jobs:
           asset_name: bloom-${{ matrix.distro }}-release-deb.zip
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Debian release generated using bloom
+          body: "Debian release generated using bloom"

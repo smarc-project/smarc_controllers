@@ -112,9 +112,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sam_basic_controllers
-#  CATKIN_DEPENDS dynamic_reconfigure geometry_msgs roscpp rospy sam_msgs sensor_msgs std_msgs tf uavcan_ros_bridge
+  INCLUDE_DIRS include
+  #LIBRARIES sam_basic_controllers
+  #CATKIN_DEPENDS dynamic_reconfigure geometry_msgs roscpp rospy sam_msgs sensor_msgs std_msgs tf smarc_msgs 
 #  DEPENDS system_lib
 )
 
@@ -125,12 +125,12 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+ include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
+#  add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/sam_basic_controllers.cpp
 # )
 
@@ -216,6 +216,7 @@ add_executable(pid_actuator_trim src/pid_utils/pid_actuator_trim.cpp)
 add_executable(pid_actuator_tcg src/pid_utils/pid_actuator_tcg.cpp)
 add_executable(pid_actuator_tv src/pid_utils/pid_actuator_tv.cpp)
 add_executable(pid_actuator_prop src/pid_utils/pid_actuator_prop.cpp)
+add_executable(pid_manager src/pid_utils/pid_manager.cpp)
 
 
 add_dependencies(odom_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -224,6 +225,7 @@ add_dependencies(pid_actuator_trim ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_
 add_dependencies(pid_actuator_tcg ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_tv ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pid_actuator_prop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(pid_manager ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(odom_listener ${catkin_LIBRARIES})
 target_link_libraries(pid_tf_listener ${catkin_LIBRARIES})
@@ -231,6 +233,7 @@ target_link_libraries(pid_actuator_trim ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tcg ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_tv ${catkin_LIBRARIES})
 target_link_libraries(pid_actuator_prop ${catkin_LIBRARIES})
+target_link_libraries(pid_manager ${catkin_LIBRARIES})
 
 #install(TARGETS ${PROJECT_NAME} odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg pid_actuator_tv pid_actuator_prop
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -252,5 +255,10 @@ install(TARGETS odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg
 
 install(DIRECTORY launch/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  PATTERN ".svn" EXCLUDE
+)
+
+install(DIRECTORY include/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   PATTERN ".svn" EXCLUDE
 )

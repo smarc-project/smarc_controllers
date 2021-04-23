@@ -1,0 +1,66 @@
+<launch>
+
+<arg name="robot_name" default="sam"/>
+
+    <node name="pid_manager" pkg="sam_basic_controllers" type="pid_manager" output="screen" >
+
+	<!-- Controller enable-disable services -->	
+	<param name="vbs_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_vbs_ctrl"/>	    
+	<param name="vbs_enable_topic" value="/$(arg robot_name)/ctrl/vbs/pid_enable"/>
+	<param name="vbs_status_topic" value="/$(arg robot_name)/ctrl/vbs_controller_status"/>
+
+	<param name="lcg_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_pitch_ctrl"/>	    
+	<param name="lcg_enable_topic" value="/$(arg robot_name)/ctrl/lcg/pid_enable"/>
+	<param name="lcg_status_topic" value="/$(arg robot_name)/ctrl/pitch_controller_status"/>
+
+	<param name="tcg_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_tcg_ctrl"/>	    
+	<param name="tcg_enable_topic" value="/$(arg robot_name)/ctrl/tcg/pid_enable"/>
+	<param name="tcg_status_topic" value="/$(arg robot_name)/ctrl/tcg_controller_status"/>
+
+	<param name="vbs_alt_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_vbs_alt_ctrl"/>	    
+	<param name="vbs_alt_enable_topic" value="/$(arg robot_name)/ctrl/vbs_alt/pid_enable"/>
+	<param name="vbs_alt_status_topic" value="/$(arg robot_name)/ctrl/vbs_alt_controller_status"/>
+
+	<param name="dheading_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_yaw_ctrl"/>	    
+	<param name="dheading_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_heading/pid_enable"/>
+	<param name="dheading_status_topic" value="/$(arg robot_name)/ctrl/yaw_controller_status"/>
+
+	<param name="ddepth_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_depth_ctrl"/>	    
+	<param name="ddepth_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable"/>
+	<param name="ddepth_status_topic" value="/$(arg robot_name)/ctrl/depth_controller_status"/>
+
+	<param name="dalt_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_altitude_ctrl"/>	    
+	<param name="dalt_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_alt/pid_enable"/>
+	<param name="dalt_status_topic" value="/$(arg robot_name)/ctrl/altitude_controller_status"/>
+
+	<param name="dvel_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_speed_ctrl"/>	    
+	<param name="dvel_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable"/>
+	<param name="dvel_status_topic" value="/$(arg robot_name)/ctrl/speed_controller_status"/>
+
+	<param name="droll_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_roll_ctrl"/>	    
+	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/>
+	<param name="droll_status_topic" value="/$(arg robot_name)/ctrl/roll_controller_status"/>
+
+
+	<!-- Flag to republish setpoint topics -->
+	<param name="republish_setpoint" value="true"/>
+	
+	<!-- Setpoints topics to subscribe from -->
+	<param name="yaw_setpoint_topic" value="/$(arg robot_name)/ctrl/yaw_setpoint"/>
+	<param name="depth_setpoint_topic" value="/$(arg robot_name)/ctrl/depth_setpoint"/>
+	<param name="altitude_setpoint_topic" value="/$(arg robot_name)/ctrl/altitude_setpoint"/>
+	<param name="speed_setpoint_topic" value="/$(arg robot_name)/ctrl/speed_setpoint"/>
+	<param name="pitch_setpoint_topic" value="/$(arg robot_name)/ctrl/pitch_setpoint"/>
+	<param name="roll_setpoint_topic" value="/$(arg robot_name)/ctrl/roll_setpoint"/>	    
+
+	<!-- Setpoints topics to republish to -->
+	<param name="yaw_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_heading/setpoint"/>
+	<param name="depth_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_depth/setpoint"/>
+	<param name="altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_alt/setpoint"/>
+	<param name="speed_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/setpoint"/>
+	<param name="pitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/lcg/setpoint"/>
+	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/>
+
+    </node>
+
+</launch>

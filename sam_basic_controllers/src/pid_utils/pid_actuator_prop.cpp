@@ -15,19 +15,19 @@ std::string topic_from_roll_controller_,topic_from_vel_controller_, topic_to_act
 
 void PIDCallback1(const std_msgs::Float64& control_msg)
 {
-  //if(abs(prev_control_msg1-control_msg.data) > limit) {
+  if(abs(prev_control_msg1-control_msg.data) > limit) {
     rpm_diff = control_msg.data;
     message_received = true;
-    //}
+    }
     ROS_INFO_THROTTLE(1.0, "[ pid_actuator_prop ] RPM Difference : %f", control_msg.data);
 }
 
 void PIDCallback2(const std_msgs::Float64& control_msg)
 {
-   //if(abs(prev_control_msg2-control_msg.data) > limit) {
+   if(abs(prev_control_msg2-control_msg.data) > limit) {
     message_received = true;
     mean_prop_rpm = control_msg.data;
-    //}
+    }
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator_prop ]  Mean RPM: %f", control_msg.data);
 }
 
@@ -64,6 +64,8 @@ int main(int argc, char** argv){
   ros::Publisher rpm2_pub = node.advertise<smarc_msgs::ThrusterRPM>(topic_to_actuator_2_, freq);
   //ros::Publisher control_action_pub = node.advertise<std_msgs::Float64>(topic_to_actuator_, 10);
   enable_state = true;
+  rpm_diff = 0;
+  mean_prop_rpm = 0;
 
   ros::Rate rate(freq);
 

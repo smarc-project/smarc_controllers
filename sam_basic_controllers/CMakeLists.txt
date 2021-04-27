@@ -241,7 +241,7 @@ target_link_libraries(pid_manager ${catkin_LIBRARIES})
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-install(TARGETS odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg pid_actuator_tv pid_actuator_prop
+install(TARGETS odom_listener pid_tf_listener pid_actuator_trim pid_actuator_tcg pid_actuator_tv pid_actuator_prop pid_manager
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

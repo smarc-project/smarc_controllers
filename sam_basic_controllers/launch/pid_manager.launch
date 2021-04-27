@@ -57,9 +57,9 @@
 	<param name="yaw_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_heading/setpoint"/>
 	<param name="depth_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_depth/setpoint"/>
 	<param name="altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_alt/setpoint"/>
-	<param name="speed_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/setpoint"/>
+	<param name="speed_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/u_setpoint"/>
 	<param name="pitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/lcg/setpoint"/>
-	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/>
+	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/roll_setpoint"/>
 
     </node>
 

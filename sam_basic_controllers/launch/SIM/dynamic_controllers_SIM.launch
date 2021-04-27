@@ -13,7 +13,8 @@
             <param name="topic_from_controller_1" value="/$(arg robot_name)/ctrl/elevator_setpoint" />
             <param name="topic_from_controller_2" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
             <param name="topic_to_actuator" value="/actuator_input" />
-            <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable" />
+            <param name="pid_enable_topic_dheading" value="/$(arg robot_name)/ctrl/dynamic_heading/pid_enable" />
+	    <param name="pid_enable_topic_ddepth" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable" />
             <param name="limit_between_setpoints" value="0.01" />
             <param name="loop_freq" value="10" />
             <remap from="/actuator_input" to="/$(arg robot_name)/core/thrust_vector_cmd"/>

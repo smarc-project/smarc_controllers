@@ -28,6 +28,7 @@
       <remap from="setpoint" to="setpoint" />
       <!--remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
+      <remap from="pid_enable" to="pid_enable" />
      </node>
 
 

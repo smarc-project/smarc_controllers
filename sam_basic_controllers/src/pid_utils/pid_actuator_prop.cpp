@@ -9,8 +9,8 @@
 smarc_msgs::ThrusterRPM rpm1, rpm2;
 //std_msgs::Float64 control_action;
 double prev_control_msg1,prev_control_msg2,limit,freq, mean_prop_rpm, rpm_diff;
-bool message_received, enable_state;
-std::string topic_from_roll_controller_,topic_from_vel_controller_, topic_to_actuator_1_, topic_to_actuator_2_, pid_enable_topic_;
+bool message_received, enable_state_dvel, enable_state_droll;
+std::string topic_from_roll_controller_,topic_from_vel_controller_, topic_to_actuator_1_, topic_to_actuator_2_, pid_enable_topic_dvel_, pid_enable_topic_droll_;
 
 
 void PIDCallback1(const std_msgs::Float64& control_msg)
@@ -31,12 +31,20 @@ void PIDCallback2(const std_msgs::Float64& control_msg)
 ROS_INFO_THROTTLE(1.0, "[ pid_actuator_prop ]  Mean RPM: %f", control_msg.data);
 }
 
-void enableCB(const std_msgs::Bool enable_msg){
+void enableCB_dvel(const std_msgs::Bool enable_msg){
 	if(enable_msg.data == false)
   {
-    enable_state = false;
+    enable_state_dvel = false;
   }
-  else enable_state = true;
+  else enable_state_dvel = true;
+}
+
+void enableCB_droll(const std_msgs::Bool enable_msg){
+	if(enable_msg.data == false)
+  {
+    enable_state_droll = false;
+  }
+  else enable_state_droll = true;
 }
 
 
@@ -51,19 +59,23 @@ int main(int argc, char** argv){
   node_priv.param<std::string>("topic_from_vel_controller", topic_from_vel_controller_, "mean_prop_rpm");
   node_priv.param<std::string>("topic_to_actuator_1", topic_to_actuator_1_, "uavcan_prop_command");
   node_priv.param<std::string>("topic_to_actuator_2", topic_to_actuator_2_, "uavcan_prop_command");
-  node_priv.param<std::string>("pid_enable_topic", pid_enable_topic_, "pid_enable");
+  node_priv.param<std::string>("pid_enable_topic_dvel", pid_enable_topic_dvel_, "pid_enable_1");
+  node_priv.param<std::string>("pid_enable_topic_droll", pid_enable_topic_droll_, "pid_enable_2");
   node_priv.param<double>("limit_between_setpoints", limit, 5);
   node_priv.param<double>("loop_freq", freq, 50);
   //initiate subscribers
   ros::Subscriber pid_action_sub_prop1 = node.subscribe(topic_from_roll_controller_, 1, PIDCallback1);
   ros::Subscriber pid_action_sub_prop2 = node.subscribe(topic_from_vel_controller_, 1, PIDCallback2);
-  ros::Subscriber enable_sub = node.subscribe(pid_enable_topic_, 10, enableCB);
+  ros::Subscriber enable_sub_dvel = node.subscribe(pid_enable_topic_dvel_, 10, enableCB_dvel);
+  ros::Subscriber enable_sub_droll = node.subscribe(pid_enable_topic_droll_, 10, enableCB_droll);
 
   //initiate publishers
   ros::Publisher rpm1_pub = node.advertise<smarc_msgs::ThrusterRPM>(topic_to_actuator_1_, freq);
   ros::Publisher rpm2_pub = node.advertise<smarc_msgs::ThrusterRPM>(topic_to_actuator_2_, freq);
   //ros::Publisher control_action_pub = node.advertise<std_msgs::Float64>(topic_to_actuator_, 10);
-  enable_state = true;
+  enable_state_dvel = true;
+  enable_state_dvel = true;
+
   rpm_diff = 0;
   mean_prop_rpm = 0;
 
@@ -71,7 +83,7 @@ int main(int argc, char** argv){
 
   while (node.ok()){
 
-    if (message_received && enable_state) {
+    if (message_received && (enable_state_dvel||enable_state_droll)) {
       rpm1.rpm = (mean_prop_rpm + 0.5*rpm_diff)*100;
       rpm2.rpm = (mean_prop_rpm - 0.5*rpm_diff)*100;
       rpm1_pub.publish(rpm1);

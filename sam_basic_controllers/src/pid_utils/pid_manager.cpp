@@ -540,7 +540,7 @@ namespace pid_manager_cpp
     //Dynamic depth service
     bool PIDManager::ddepth_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
     {
-        ROS_INFO("Dynamic heading service callback activated");
+        ROS_INFO("Dynamic depth service callback activated");
         if (request.data)
         {
             try
@@ -578,7 +578,7 @@ namespace pid_manager_cpp
     //Dynamic altitude service
     bool PIDManager::dalt_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
     {
-        ROS_INFO("Dynamic heading service callback activated");
+        ROS_INFO("Dynamic altitude service callback activated");
         if (request.data)
         {
             try
@@ -616,7 +616,7 @@ namespace pid_manager_cpp
     //Dynamic velocity service
     bool PIDManager::dvel_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
     {
-        ROS_INFO("Dynamic heading service callback activated");
+        ROS_INFO("Dynamic velocity service callback activated");
         if (request.data)
         {
             try
@@ -654,7 +654,7 @@ namespace pid_manager_cpp
     //Dynamic roll service
     bool PIDManager::droll_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
     {
-        ROS_INFO("Dynamic heading service callback activated");
+        ROS_INFO("Dynamic roll service callback activated");
         if (request.data)
         {
             try

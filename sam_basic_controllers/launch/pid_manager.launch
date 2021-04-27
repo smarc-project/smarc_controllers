@@ -37,8 +37,10 @@
 	<param name="dvel_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable"/>
 	<param name="dvel_status_topic" value="/$(arg robot_name)/ctrl/speed_controller_status"/>
 
-	<param name="droll_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_roll_ctrl"/>	    
-	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/>
+	<param name="droll_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_roll_ctrl"/>	
+	<!--We can use a combined velocity and roll controller, same enable topic, or we can also use separate controller, see commented line-->    
+	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable"/>
+	<!--param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/-->
 	<param name="droll_status_topic" value="/$(arg robot_name)/ctrl/roll_controller_status"/>
 
 
@@ -59,7 +61,9 @@
 	<param name="altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_alt/setpoint"/>
 	<param name="speed_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/u_setpoint"/>
 	<param name="pitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/lcg/setpoint"/>
+	<!--We can use a combined velocity and roll controller, same enable topic, or we can also use separate controller, see commented line-->    
 	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/roll_setpoint"/>
+	<!--param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/-->
 
     </node>
 

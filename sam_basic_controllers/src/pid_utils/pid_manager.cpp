@@ -13,6 +13,94 @@
 
 namespace pid_manager_cpp
 {
+    //Generic controller toggle service constructor
+    PIDToggleService::PIDToggleService(ros::NodeHandle& nodehandle, std::string service_name, std::string enable_topic, std::string status_topic) : nh_(nodehandle)
+    {
+        //initialize variables
+        ctrl_srv_name_ = service_name;
+        enable_topic_ = enable_topic;
+        status_topic_ = status_topic;
+        
+        enable_msg.data = false;
+        status_msg.control_status = 0;
+        status_msg.service_name = ctrl_srv_name_;     
+
+        //initialize service
+
+        ctrl_srv_ = nh_.advertiseService(ctrl_srv_name_,
+                                         &PIDToggleService::ctrl_srv_cb,
+                                         this); // testing modular service
+        
+        //initialize publishers
+        enable_pub_ = nh_.advertise<std_msgs::Bool>(enable_topic_, 10);
+        status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(status_topic_, 1);
+    
+      } 
+
+    //Generic controller toggle service callback
+    bool PIDToggleService::ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
+    {
+        ROS_INFO("VBS service callback activated");
+        if (request.data)
+        {
+            try
+            {
+                //enable  controller
+                enable_msg.data= true;
+                status_msg.control_status = 1;
+                response.success = true;
+                response.message = std::string("Connected");
+            }
+            catch (std::exception &e)
+            {
+                ROS_INFO("Caught exception: %s", e.what());
+                response.success = false;
+                response.message = std::string("Couldn't connect");
+            }
+        }
+        else
+        {
+            try
+            {
+                enable_msg.data= false;
+                status_msg.control_status = 0;
+                response.success = true;
+                response.message = std::string("Disconnected");
+            }
+            catch (std::exception &e)
+            {
+                ROS_INFO("Caught exception: %s", e.what());
+                response.success = false;
+                response.message = std::string("Couldn't disconnect");
+            }
+        }
+
+        return true;
+    }
+
+    //Setpoint republisher constructor
+    PIDSetpointRepub::PIDSetpointRepub(ros::NodeHandle& nodehandle,std::string setpoint_topic_, std::string setpoint_topic_repub_): nh_(nodehandle)
+    {
+        //Initialize variables
+       // setpoint_topic_= setpoint_topic;
+       // setpoint_topic_repub_ = setpoint_repub_topic;
+
+        //Subscriber
+        setpoint_sub_= nh_.subscribe(setpoint_topic_, 1, &PIDSetpointRepub::setpoint_cb, this);
+
+        //Publisher
+        setpoint_pub_ = nh_.advertise<std_msgs::Float64>(setpoint_topic_repub_, 10);
+
+    }
+
+    //Generic setpoint republishing callback
+    void PIDSetpointRepub::setpoint_cb(const std_msgs::Float64& setpoint_)
+    {
+        setpoint.data = setpoint_.data;
+        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint");
+    } 
+      
+
     PIDManager::PIDManager(ros::NodeHandle& nodehandle) : nh_(nodehandle)
     {
         // Initialize node parameters from launch file or command line. Use a private node handle so that multiple instances
@@ -71,659 +159,72 @@ namespace pid_manager_cpp
         pnh.param<std::string>("speed_setpoint_topic_repub", speed_setpoint_topic_repub_, "sam/ctrl/dynamic_velocity/setpoint");        
         pnh.param<std::string>("pitch_setpoint_topic_repub", pitch_setpoint_topic_repub_, "sam/ctrl/lcg/setpoint");
         pnh.param<std::string>("roll_setpoint_topic_repub", roll_setpoint_topic_repub_, "sam/ctrl/dynamic_roll/setpoint");        
-      
+
+
+        // create controller services
+        PIDToggleService vbs(nh_,vbs_ctrl_srv_name_,vbs_enable_topic_,vbs_status_topic_);
+        PIDToggleService lcg(nh_,lcg_ctrl_srv_name_,lcg_enable_topic_,lcg_status_topic_);
+        PIDToggleService tcg(nh_,tcg_ctrl_srv_name_,tcg_enable_topic_,tcg_status_topic_);
+        PIDToggleService vbs_alt(nh_,vbs_alt_ctrl_srv_name_,vbs_alt_enable_topic_,vbs_alt_status_topic_);
+        PIDToggleService dheading(nh_,dheading_ctrl_srv_name_, dheading_enable_topic_,dheading_status_topic_);
+        PIDToggleService ddepth(nh_,ddepth_ctrl_srv_name_, ddepth_enable_topic_,ddepth_status_topic_);
+        PIDToggleService dalt(nh_,dalt_ctrl_srv_name_, dalt_enable_topic_,dalt_status_topic_);
+        PIDToggleService dvel(nh_,dvel_ctrl_srv_name_, dvel_enable_topic_,dvel_status_topic_);
+        PIDToggleService droll(nh_,droll_ctrl_srv_name_, droll_enable_topic_,droll_status_topic_);
+
+        //Assign republishing of setpoints
+        PIDSetpointRepub yaw(nh_,yaw_setpoint_topic_,yaw_setpoint_topic_repub_);
+        PIDSetpointRepub depth(nh_,depth_setpoint_topic_,depth_setpoint_topic_repub_);
+        PIDSetpointRepub altitude(nh_,altitude_setpoint_topic_,altitude_setpoint_topic_repub_);
+        PIDSetpointRepub speed(nh_,speed_setpoint_topic_,speed_setpoint_topic_repub_);
+        PIDSetpointRepub pitch(nh_,pitch_setpoint_topic_,pitch_setpoint_topic_repub_);
+        PIDSetpointRepub roll(nh_,roll_setpoint_topic_,roll_setpoint_topic_repub_);
         
-        //Have controllers disabled by default
-        vbs_enable_msg.data = false;
-        vbs_status_msg.control_status = 0;
-        vbs_status_msg.service_name = vbs_ctrl_srv_name_;
-
-        lcg_enable_msg.data = false;
-        lcg_status_msg.control_status = 0;
-        lcg_status_msg.service_name = lcg_ctrl_srv_name_;
-
-        tcg_enable_msg.data = false;
-        tcg_status_msg.control_status = 0;
-        tcg_status_msg.service_name = tcg_ctrl_srv_name_;
-
-        vbs_alt_enable_msg.data = false;
-        vbs_alt_status_msg.control_status = 0;
-        vbs_alt_status_msg.service_name = vbs_alt_ctrl_srv_name_;
-
-        dheading_enable_msg.data = false;
-        dheading_status_msg.control_status = 0;
-        dheading_status_msg.service_name = dheading_ctrl_srv_name_;
-
-        ddepth_enable_msg.data = false;
-        ddepth_status_msg.control_status = 0;
-        ddepth_status_msg.service_name = ddepth_ctrl_srv_name_;
-
-        dalt_enable_msg.data = false;
-        dalt_status_msg.control_status = 0;
-        dalt_status_msg.service_name = dalt_ctrl_srv_name_;
-
-        dvel_enable_msg.data = false;
-        dvel_status_msg.control_status = 0;
-        dvel_status_msg.service_name = dvel_ctrl_srv_name_;
-
-        droll_enable_msg.data = false;
-        droll_status_msg.control_status = 0;
-        droll_status_msg.service_name = droll_ctrl_srv_name_;
-
-
-        // initialize ros interfaces
-        initialize_subscribers();
-        initialize_publishers();
-        initialize_services();
-
 
         ros::Rate idle_rate(10);
         while (ros::ok())
         {
-            //Check if controllers are enabled and set controller status
-
-            //VBS
-            if(vbs_enable_msg.data)
-            {
-                vbs_status_msg.control_status = 1;
-            }
-            else
-            {
-                vbs_status_msg.control_status = 0;
-            }
-
-            //LCG
-            if(lcg_enable_msg.data)
-            {
-                lcg_status_msg.control_status = 1;
-            }
-            else
-            {
-                lcg_status_msg.control_status = 0;
-            }
-
-            //TCG
-            if(tcg_enable_msg.data)
-            {
-                tcg_status_msg.control_status = 1;
-            }
-            else
-            {
-                tcg_status_msg.control_status = 0;
-            }
-
-            //VBS Alt
-            if(vbs_alt_enable_msg.data)
-            {
-                vbs_alt_status_msg.control_status = 1;
-            }
-            else
-            {
-                vbs_alt_status_msg.control_status = 0;
-            }
-
-            //Dynamic heading
-            if(dheading_enable_msg.data)
-            {
-                dheading_status_msg.control_status = 1;
-            }
-            else
-            {
-                dheading_status_msg.control_status = 0;
-            }
-
-            //Dynamic depth
-            if(ddepth_enable_msg.data)
-            {
-                ddepth_status_msg.control_status = 1;
-            }
-            else
-            {
-                ddepth_status_msg.control_status = 0;
-            }
-
-            //Dynamic altitude
-            if(dalt_enable_msg.data)
-            {
-                dalt_status_msg.control_status = 1;
-            }
-            else
-            {
-                dalt_status_msg.control_status = 0;
-            }
-
-            //Dynamic velocity
-            if(dvel_enable_msg.data)
-            {
-                dvel_status_msg.control_status = 1;
-            }
-            else
-            {
-                dvel_status_msg.control_status = 0;
-            }
-
-            //Dynamic roll
-            if(droll_enable_msg.data)
-            {
-                droll_status_msg.control_status = 1;
-            }
-            else
-            {
-                droll_status_msg.control_status = 0;
-            }
-
-            
 
             //Publish enable messages            
-            vbs_enable_pub_.publish(vbs_enable_msg);
-            lcg_enable_pub_.publish(lcg_enable_msg);
-            tcg_enable_pub_.publish(tcg_enable_msg);
-            vbs_alt_enable_pub_.publish(vbs_alt_enable_msg);
-            dheading_enable_pub_.publish(dheading_enable_msg);
-            ddepth_enable_pub_.publish(ddepth_enable_msg);
-            dalt_enable_pub_.publish(dalt_enable_msg);
-            dvel_enable_pub_.publish(dvel_enable_msg);
-            droll_enable_pub_.publish(droll_enable_msg);
+            vbs.enable_pub_.publish(vbs.enable_msg);
+            lcg.enable_pub_.publish(lcg.enable_msg);
+            tcg.enable_pub_.publish(tcg.enable_msg);
+            vbs_alt.enable_pub_.publish(vbs_alt.enable_msg);
+            dheading.enable_pub_.publish(dheading.enable_msg);
+            ddepth.enable_pub_.publish(ddepth.enable_msg);
+            dalt.enable_pub_.publish(dalt.enable_msg);
+            dvel.enable_pub_.publish(dvel.enable_msg);
+            droll.enable_pub_.publish(droll.enable_msg);
 
 
             //Publish status messages
-            vbs_status_pub_.publish(vbs_status_msg);
-            lcg_status_pub_.publish(lcg_status_msg);
-            tcg_status_pub_.publish(tcg_status_msg);
-            vbs_alt_status_pub_.publish(vbs_alt_status_msg);
-            dheading_status_pub_.publish(dheading_status_msg);
-            ddepth_status_pub_.publish(ddepth_status_msg);
-            dalt_status_pub_.publish(dalt_status_msg);
-            dvel_status_pub_.publish(dvel_status_msg);
-            droll_status_pub_.publish(droll_status_msg);
+            vbs.status_pub_.publish(vbs.status_msg);
+            lcg.status_pub_.publish(lcg.status_msg);
+            tcg.status_pub_.publish(tcg.status_msg);
+            vbs_alt.status_pub_.publish(vbs_alt.status_msg);
+            dheading.status_pub_.publish(dheading.status_msg);
+            ddepth.status_pub_.publish(ddepth.status_msg);
+            dalt.status_pub_.publish(dalt.status_msg);
+            dvel.status_pub_.publish(dvel.status_msg);
+            droll.status_pub_.publish(droll.status_msg);
 
             //TODO: Republish setpoints to specific controllers- currently only dynamic, later add a logic.
             if(republish_setpoint_)
             {
                 //republishing controller setpoints
-                yaw_setpoint_pub_.publish(yaw_setpoint);
-                depth_setpoint_pub_.publish(depth_setpoint);
-                altitude_setpoint_pub_.publish(altitude_setpoint);
-                speed_setpoint_pub_.publish(speed_setpoint);  
-                pitch_setpoint_pub_.publish(pitch_setpoint);                
-                roll_setpoint_pub_.publish(roll_setpoint);           
+                yaw.setpoint_pub_.publish(yaw.setpoint);
+                depth.setpoint_pub_.publish(depth.setpoint);
+                altitude.setpoint_pub_.publish(altitude.setpoint);
+                speed.setpoint_pub_.publish(speed.setpoint);  
+                pitch.setpoint_pub_.publish(pitch.setpoint);                
+                roll.setpoint_pub_.publish(roll.setpoint);           
             }
-
-
             
             idle_rate.sleep();
             
             ros::spinOnce();
             //ros::spin();
         }
-    }
-
-    void PIDManager::initialize_subscribers()
-    {
-        // initialize subscribers here - consider republishing setpoints from Nils' nomenclature
-        yaw_setpoint_sub_= nh_.subscribe(yaw_setpoint_topic_, 1, &PIDManager::yaw_setpoint_cb, this);
-        depth_setpoint_sub_= nh_.subscribe(depth_setpoint_topic_, 1, &PIDManager::depth_setpoint_cb, this);
-        altitude_setpoint_sub_= nh_.subscribe(altitude_setpoint_topic_, 1, &PIDManager::altitude_setpoint_cb, this);
-        speed_setpoint_sub_= nh_.subscribe(speed_setpoint_topic_, 1, &PIDManager::speed_setpoint_cb, this);
-        pitch_setpoint_sub_= nh_.subscribe(pitch_setpoint_topic_, 1, &PIDManager::pitch_setpoint_cb, this);
-        roll_setpoint_sub_= nh_.subscribe(roll_setpoint_topic_, 1, &PIDManager::roll_setpoint_cb, this);        
-    }
-
-    void PIDManager::initialize_services()
-    {
-       vbs_ctrl_srv_ = nh_.advertiseService(vbs_ctrl_srv_name_,
-                                           &PIDManager::vbs_ctrl_srv_cb,
-                                           this);
-       lcg_ctrl_srv_ = nh_.advertiseService(lcg_ctrl_srv_name_,
-                                           &PIDManager::lcg_ctrl_srv_cb,
-                                           this);
-       tcg_ctrl_srv_ = nh_.advertiseService(tcg_ctrl_srv_name_,
-                                           &PIDManager::tcg_ctrl_srv_cb,
-                                           this);
-       vbs_alt_ctrl_srv_ = nh_.advertiseService(vbs_alt_ctrl_srv_name_,
-                                           &PIDManager::vbs_alt_ctrl_srv_cb,
-                                           this);
-       dheading_ctrl_srv_ = nh_.advertiseService(dheading_ctrl_srv_name_,
-                                           &PIDManager::dheading_ctrl_srv_cb,
-                                           this);
-       ddepth_ctrl_srv_ = nh_.advertiseService(ddepth_ctrl_srv_name_,
-                                           &PIDManager::ddepth_ctrl_srv_cb,
-                                           this);
-       dalt_ctrl_srv_ = nh_.advertiseService(dalt_ctrl_srv_name_,
-                                           &PIDManager::dalt_ctrl_srv_cb,
-                                           this);
-       dvel_ctrl_srv_ = nh_.advertiseService(dvel_ctrl_srv_name_,
-                                           &PIDManager::dvel_ctrl_srv_cb,
-                                           this);
-       droll_ctrl_srv_ = nh_.advertiseService(droll_ctrl_srv_name_,
-                                           &PIDManager::droll_ctrl_srv_cb,
-                                           this);
-
-    }
-
-    void PIDManager::initialize_publishers()
-    {
-        // Publish enable flag and status
-        vbs_enable_pub_ = nh_.advertise<std_msgs::Bool>(vbs_enable_topic_, 10);
-        vbs_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(vbs_status_topic_, 1);
-
-        lcg_enable_pub_ = nh_.advertise<std_msgs::Bool>(lcg_enable_topic_, 10);
-        lcg_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(lcg_status_topic_, 1);
-
-        tcg_enable_pub_ = nh_.advertise<std_msgs::Bool>(tcg_enable_topic_, 10);
-        tcg_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(tcg_status_topic_, 1);
-
-        vbs_alt_enable_pub_ = nh_.advertise<std_msgs::Bool>(vbs_alt_enable_topic_, 10);
-        vbs_alt_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(vbs_alt_status_topic_, 1);
-
-        dheading_enable_pub_ = nh_.advertise<std_msgs::Bool>(dheading_enable_topic_, 10);
-        dheading_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(dheading_status_topic_, 1);
-
-        ddepth_enable_pub_ = nh_.advertise<std_msgs::Bool>(ddepth_enable_topic_, 10);
-        ddepth_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(ddepth_status_topic_, 1);
-
-        dalt_enable_pub_ = nh_.advertise<std_msgs::Bool>(dalt_enable_topic_, 10);
-        dalt_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(dalt_status_topic_, 1);
-
-        dvel_enable_pub_ = nh_.advertise<std_msgs::Bool>(dvel_enable_topic_, 10);
-        dvel_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(dvel_status_topic_, 1);
-
-        droll_enable_pub_ = nh_.advertise<std_msgs::Bool>(droll_enable_topic_, 10);
-        droll_status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(droll_status_topic_, 1);
-
-        //Republish setpoints if needed
-        yaw_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(yaw_setpoint_topic_repub_, 10);
-        depth_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(depth_setpoint_topic_repub_, 10);
-        altitude_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(altitude_setpoint_topic_repub_, 10);
-        speed_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(speed_setpoint_topic_repub_, 10);
-        pitch_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(pitch_setpoint_topic_repub_, 10);
-        roll_setpoint_pub_ = nh_.advertise<std_msgs::Float64>(roll_setpoint_topic_repub_, 10);
-
-
-    }
-
-    bool PIDManager::vbs_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("VBS service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                vbs_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                vbs_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-
-        //if (response.success)
-        //{
-        //    vbs_enable_msg.data = request.data;
-        //}
-
-        return true;
-    }
-
-    //LCG service
-    bool PIDManager::lcg_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("LCG service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                lcg_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                lcg_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //TCG service
-    bool PIDManager::tcg_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("TCG service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                tcg_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                tcg_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //VBS altitude service
-    bool PIDManager::vbs_alt_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("VBS altitude service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                vbs_alt_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                vbs_alt_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //Dynamic heading service
-    bool PIDManager::dheading_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("Dynamic heading service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                dheading_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                dheading_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //Dynamic depth service
-    bool PIDManager::ddepth_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("Dynamic depth service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                ddepth_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                ddepth_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //Dynamic altitude service
-    bool PIDManager::dalt_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("Dynamic altitude service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                dalt_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                dalt_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //Dynamic velocity service
-    bool PIDManager::dvel_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("Dynamic velocity service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                dvel_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                dvel_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //Dynamic roll service
-    bool PIDManager::droll_ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
-    {
-        ROS_INFO("Dynamic roll service callback activated");
-        if (request.data)
-        {
-            try
-            {
-                //enable  controller
-                droll_enable_msg.data= true;
-                response.success = true;
-                response.message = std::string("Connected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't connect");
-            }
-        }
-        else
-        {
-            try
-            {
-                droll_enable_msg.data= false;
-                response.success = true;
-                response.message = std::string("Disconnected");
-            }
-            catch (std::exception &e)
-            {
-                ROS_INFO("Caught exception: %s", e.what());
-                response.success = false;
-                response.message = std::string("Couldn't disconnect");
-            }
-        }
-        return true;
-    }
-
-    //subscriber callbacks to setpoints
-    void PIDManager::yaw_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        yaw_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
-    }
-
-    void PIDManager::depth_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        depth_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
-    }
-
-    void PIDManager::altitude_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        altitude_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
-    }
-
-    void PIDManager::speed_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        speed_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
-    }
-
-    void PIDManager::pitch_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        pitch_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
-    }
-
-    void PIDManager::roll_setpoint_cb(const std_msgs::Float64& setpoint)
-    {
-        roll_setpoint.data = setpoint.data;
-        ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint: %f");
     }
 
 } // namespace pid_manager_cpp

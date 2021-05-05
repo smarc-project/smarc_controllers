@@ -40,7 +40,7 @@ namespace pid_manager_cpp
     //Generic controller toggle service callback
     bool PIDToggleService::ctrl_srv_cb(std_srvs::SetBool::Request &request, std_srvs::SetBool::Response &response)
     {
-        ROS_INFO("VBS service callback activated");
+        ROS_INFO("Toggle PID service activated");
         if (request.data)
         {
             try

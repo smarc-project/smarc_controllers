@@ -15,7 +15,7 @@ std::string topic_from_roll_controller_,topic_from_vel_controller_, topic_to_act
 
 void PIDCallback1(const std_msgs::Float64& control_msg)
 {
-  if(abs(prev_control_msg1-control_msg.data) > limit) {
+  if(fabs(prev_control_msg1-control_msg.data) > limit) {
     rpm_diff = control_msg.data;
     message_received = true;
     }
@@ -24,7 +24,7 @@ void PIDCallback1(const std_msgs::Float64& control_msg)
 
 void PIDCallback2(const std_msgs::Float64& control_msg)
 {
-   if(abs(prev_control_msg2-control_msg.data) > limit) {
+   if(fabs(prev_control_msg2-control_msg.data) > limit) {
     message_received = true;
     mean_prop_rpm = control_msg.data;
     }

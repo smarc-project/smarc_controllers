@@ -15,7 +15,7 @@ bool emergency_state, enable_state;
 
 void PIDCallback(const std_msgs::Float64& control_msg)
 {
-  if(abs(prev_control_msg-control_msg.data) > limit) {
+  if(fabs(prev_control_msg-control_msg.data) > limit) {
 	message_received = true;
 	control_action.value = control_msg.data + 50.;//transforms.transform.rotation.x;//data;
     }

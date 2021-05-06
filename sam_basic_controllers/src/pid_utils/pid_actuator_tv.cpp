@@ -14,7 +14,7 @@ bool message_received, enable_state_dheading, enable_state_ddepth;
 
 void PIDCallback_Elevator(const std_msgs::Float64& control_msg)
 {
-  if(abs(prev_control_msg1-control_msg.data) > limit) {
+  if(fabs(prev_control_msg1-control_msg.data) > limit) {
     	  message_received=true;	
 	  control_action.thruster_vertical_radians = control_msg.data;
     }

@@ -7,7 +7,7 @@
 	<!-- Controller enable-disable services -->	
 	<param name="vbs_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_vbs_ctrl"/>	    
 	<param name="vbs_enable_topic" value="/$(arg robot_name)/ctrl/vbs/pid_enable"/>
-	<param name="vbs_status_topic" value="/$(arg robot_name)/ctrl/vbs_controller_status"/>
+	<param name="vbs_status_topic" value="/$(arg robot_name)/ctrl/depth_controller_status"/>
 
 	<param name="lcg_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_pitch_ctrl"/>	    
 	<param name="lcg_enable_topic" value="/$(arg robot_name)/ctrl/lcg/pid_enable"/>
@@ -15,11 +15,11 @@
 
 	<param name="tcg_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_tcg_ctrl"/>	    
 	<param name="tcg_enable_topic" value="/$(arg robot_name)/ctrl/tcg/pid_enable"/>
-	<param name="tcg_status_topic" value="/$(arg robot_name)/ctrl/tcg_controller_status"/>
+	<param name="tcg_status_topic" value="/$(arg robot_name)/ctrl/roll_controller_status"/>
 
 	<param name="vbs_alt_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_vbs_alt_ctrl"/>	    
 	<param name="vbs_alt_enable_topic" value="/$(arg robot_name)/ctrl/vbs_alt/pid_enable"/>
-	<param name="vbs_alt_status_topic" value="/$(arg robot_name)/ctrl/vbs_alt_controller_status"/>
+	<param name="vbs_alt_status_topic" value="/$(arg robot_name)/ctrl/altitude_controller_status"/>
 
 	<param name="dheading_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_yaw_ctrl"/>	    
 	<param name="dheading_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_heading/pid_enable"/>

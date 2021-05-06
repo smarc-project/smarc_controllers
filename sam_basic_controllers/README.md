@@ -8,23 +8,23 @@ To launch cascaded heading and depth controllers, launch dynamic_controllers.lau
 
 To activate the controllers call the following services - set the value to "true" to engage and "false" to disable:
 
-  VBS static depth: /sam/ctrl/toggle_vbs_ctrl
+  - _VBS static depth:_ ```/sam/ctrl/toggle_vbs_ctrl```
   
-  LCG static pitch: /sam/ctrl/toggle_pitch_ctrl
+  - _LCG static pitch:_ ```/sam/ctrl/toggle_pitch_ctrl```
   
-  VBS static altitude: /sam/ctrl/toggle_vbs_alt_ctrl
+  - _VBS static altitude:_ ```/sam/ctrl/toggle_vbs_alt_ctrl```
   
-  Yaw: /sam/ctrl/toggle_yaw_ctrl
+  - _Yaw:_ ```/sam/ctrl/toggle_yaw_ctrl```
   
-  Depth: /sam/ctrl/toggle_depth_ctrl
+  - _Depth:_ ```/sam/ctrl/toggle_depth_ctrl```
   
-  Altitude: /sam/ctrl/toggle_altitude_ctrl
+  - _Altitude:_ ```/sam/ctrl/toggle_altitude_ctrl```
   
-  Speed: /sam/ctrl/toggle_speed_ctrl
+  - _Speed:_ ```/sam/ctrl/toggle_speed_ctrl```
   
-  Roll: /sam/ctrl/toggle_roll_ctrl
+  - _Roll:_ ```/sam/ctrl/toggle_roll_ctrl```
   
-  (Static Roll TCG: /sam/ctrl/toggle_tcg_ctrl) 
+  - (_Static Roll TCG:_ ```/sam/ctrl/toggle_tcg_ctrl```) 
 
 TODO: Combine both controller launch files in one after further testing.
 

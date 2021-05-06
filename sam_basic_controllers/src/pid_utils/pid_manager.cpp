@@ -158,8 +158,11 @@ namespace pid_manager_cpp
         pnh.param<std::string>("altitude_setpoint_topic_repub", altitude_setpoint_topic_repub_, "sam/ctrl/dynamic_alt/setpoint");
         pnh.param<std::string>("speed_setpoint_topic_repub", speed_setpoint_topic_repub_, "sam/ctrl/dynamic_velocity/setpoint");        
         pnh.param<std::string>("pitch_setpoint_topic_repub", pitch_setpoint_topic_repub_, "sam/ctrl/lcg/setpoint");
-        pnh.param<std::string>("roll_setpoint_topic_repub", roll_setpoint_topic_repub_, "sam/ctrl/dynamic_roll/setpoint");        
-
+        pnh.param<std::string>("roll_setpoint_topic_repub", roll_setpoint_topic_repub_, "sam/ctrl/dynamic_roll/setpoint");      
+        //Overactuation to include vbs and tcg for depth and altitude:
+        pnh.param<std::string>("vbs_depth_setpoint_topic_repub", vbs_depth_setpoint_topic_repub_, "sam/ctrl/vbs/setpoint");
+        pnh.param<std::string>("vbs_altitude_setpoint_topic_repub", vbs_altitude_setpoint_topic_repub_, "sam/ctrl/vbs_alt/setpoint");
+        pnh.param<std::string>("tcg_roll_setpoint_topic_repub", tcg_roll_setpoint_topic_repub_, "sam/ctrl/tcg/setpoint");        
 
         // create controller services
         PIDToggleService vbs(nh_,vbs_ctrl_srv_name_,vbs_enable_topic_,vbs_status_topic_);
@@ -179,7 +182,11 @@ namespace pid_manager_cpp
         PIDSetpointRepub speed(nh_,speed_setpoint_topic_,speed_setpoint_topic_repub_);
         PIDSetpointRepub pitch(nh_,pitch_setpoint_topic_,pitch_setpoint_topic_repub_);
         PIDSetpointRepub roll(nh_,roll_setpoint_topic_,roll_setpoint_topic_repub_);
-        
+        //Overactuation in depth, altitude and roll:
+        PIDSetpointRepub vbs_depth(nh_,depth_setpoint_topic_,vbs_depth_setpoint_topic_repub_);
+        PIDSetpointRepub vbs_altitude(nh_,altitude_setpoint_topic_,vbs_altitude_setpoint_topic_repub_);
+        PIDSetpointRepub tcg_roll(nh_,roll_setpoint_topic_,tcg_roll_setpoint_topic_repub_);
+
 
         ros::Rate idle_rate(10);
         while (ros::ok())
@@ -218,6 +225,10 @@ namespace pid_manager_cpp
                 speed.setpoint_pub_.publish(speed.setpoint);  
                 pitch.setpoint_pub_.publish(pitch.setpoint);                
                 roll.setpoint_pub_.publish(roll.setpoint);           
+                //overactuation:
+                vbs_depth.setpoint_pub_.publish(vbs_depth.setpoint);
+                vbs_altitude.setpoint_pub_.publish(vbs_altitude.setpoint);
+                tcg_roll.setpoint_pub_.publish(tcg_roll.setpoint);           
             }
             
             idle_rate.sleep();

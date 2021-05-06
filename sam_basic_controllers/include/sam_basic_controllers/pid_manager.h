@@ -135,6 +135,10 @@ namespace pid_manager_cpp
         std::string speed_setpoint_topic_repub_;
         std::string pitch_setpoint_topic_repub_;
         std::string roll_setpoint_topic_repub_;
+        //Additional setpoints to vbs,tcg for overactuation in depth, altitude and roll
+        std::string vbs_depth_setpoint_topic_repub_;
+        std::string vbs_altitude_setpoint_topic_repub_;
+        std::string tcg_roll_setpoint_topic_repub_;
 
     };
 

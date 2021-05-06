@@ -64,6 +64,13 @@
 	<!--We can use a combined velocity and roll controller, same enable topic, or we can also use separate controller, see commented line-->    
 	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/roll_setpoint"/>
 	<!--param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/-->
+	<!--Including overactuation in depth, altitude and roll with vbs and tcg:-->    
+	<param name="vbs_depth_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs/setpoint"/>
+	<param name="vbs_altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs_alt/setpoint"/>
+	<param name="tcg_roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/tcg/setpoint"/>
+
+
+
 
     </node>
 

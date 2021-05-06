@@ -1,6 +1,7 @@
 <launch>
 
 <arg name="robot_name" default="sam"/>
+<arg name="republish_setpoint" default="false"/>
 
     <node name="pid_manager" pkg="sam_basic_controllers" type="pid_manager" output="screen" >
 
@@ -45,7 +46,7 @@
 
 
 	<!-- Flag to republish setpoint topics -->
-	<param name="republish_setpoint" value="true"/>
+	<param name="republish_setpoint" value="$(arg republish_setpoint)"/>
 	
 	<!-- Setpoints topics to subscribe from -->
 	<param name="yaw_setpoint_topic" value="/$(arg robot_name)/ctrl/yaw_setpoint"/>

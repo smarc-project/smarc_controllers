@@ -25,16 +25,16 @@ namespace pid_manager_cpp
         status_msg.control_status = 0;
         status_msg.service_name = ctrl_srv_name_;     
 
-        //initialize service
+        //initialize publishers
+        enable_pub_ = nh_.advertise<std_msgs::Bool>(enable_topic_, 1);
+        status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(status_topic_, 1);
 
+        //initialize service
         ctrl_srv_ = nh_.advertiseService(ctrl_srv_name_,
                                          &PIDToggleService::ctrl_srv_cb,
                                          this); // testing modular service
         
-        //initialize publishers
-        enable_pub_ = nh_.advertise<std_msgs::Bool>(enable_topic_, 10);
-        status_pub_ = nh_.advertise<smarc_msgs::ControllerStatus>(status_topic_, 1);
-    
+
       } 
 
     //Generic controller toggle service callback
@@ -48,6 +48,7 @@ namespace pid_manager_cpp
                 //enable  controller
                 enable_msg.data= true;
                 status_msg.control_status = 1;
+                //ROS_INFO_THROTTLE(1.0, "[ pid_manager ] Status 1")
                 response.success = true;
                 response.message = std::string("Connected");
             }
@@ -64,6 +65,7 @@ namespace pid_manager_cpp
             {
                 enable_msg.data= false;
                 status_msg.control_status = 0;
+                //ROS_INFO_THROTTLE(1.0, "[ pid_manager ] Status 0");
                 response.success = true;
                 response.message = std::string("Disconnected");
             }

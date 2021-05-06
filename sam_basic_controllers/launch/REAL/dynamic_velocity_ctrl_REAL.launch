@@ -20,6 +20,7 @@
       <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
       <!--remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
+      <remap from="pid_enable" to="pid_enable" />
      </node>
 
      <node name="dyn_vel_u_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
@@ -38,6 +39,7 @@
        <remap from="setpoint" to="u_setpoint" />
        <!--remap from="/plant_state_pitch" to="state" />
        <remap from="control_effort" to="/control_effort" /-->
+       <remap from="pid_enable" to="pid_enable" />
       </node>
 
 

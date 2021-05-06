@@ -19,6 +19,7 @@
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/dynamic_heading/angle_error" /-->
       <param name="topic_from_controller" value="r_setpoint" />
       <remap from="setpoint" to="setpoint" />
+      <remap from="pid_enable" to="pid_enable" />
     </node>
 
      <node name="dyn_heading_pid_2" pkg="pid" type="controller" ns="dynamic_heading" output="screen" >
@@ -35,6 +36,7 @@
        <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/r_feedback" /-->
        <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
        <remap from="setpoint" to="r_setpoint" />
+       <remap from="pid_enable" to="pid_enable" />
       </node>
 
 </launch>

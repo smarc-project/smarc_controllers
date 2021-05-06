@@ -2,12 +2,16 @@
 
     <arg name="robot_name" default="sam"/>
 
-    <node name="dyn_roll_pid" pkg="pid" type="controller" ns="sam/ctrl/dynamic_roll" output="screen" >
-      <param name="Kp" value="500" />
+    <node name="dyn_roll_pid" pkg="pid" type="controller" ns="dynamic_roll" output="screen" >
+    <!--node name="dyn_roll_pid" pkg="pid" type="controller" ns="sam/ctrl/dynamic_roll" output="screen" -->
+      <!--param name="Kp" value="500" />
       <param name="Ki" value="1.0" />
-      <param name="Kd" value="10.0" />
-      <param name="upper_limit" value="500" />
-      <param name="lower_limit" value="-500" />
+      <param name="Kd" value="10.0" /-->
+      <param name="Kp" value="0.8" />
+      <param name="Ki" value="0.08" />
+      <param name="Kd" value="0.08" />
+      <param name="upper_limit" value="15" />
+      <param name="lower_limit" value="-15" />
       <param name="windup_limit" value="100" />
       <param name="max_loop_frequency" value="100.0" />
       <param name="min_loop_frequency" value="100.0" />
@@ -15,10 +19,11 @@
       <param name="topic_from_plant" value="/$(arg robot_name)/dr/roll" />
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/roll_feedback" /-->
       <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
-      <remap from="setpoint" to="roll_setpoint" />
+      <remap from="setpoint" to="setpoint" />
       <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
       <!--remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
+      <remap from="pid_enable" to="pid_enable" />
      </node>
 
 

@@ -5,6 +5,7 @@
 <arg name="with_depth" default="true"/>
 <arg name="with_velocity" default="true"/>
 <arg name="with_alt" default="true"/>
+<arg name="with_roll" default="false"/>
 
 <group ns="$(arg robot_name)">
     <group ns="ctrl">
@@ -13,7 +14,8 @@
             <param name="topic_from_controller_1" value="/$(arg robot_name)/ctrl/elevator_setpoint" />
             <param name="topic_from_controller_2" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
             <param name="topic_to_actuator" value="/actuator_input" />
-            <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable" />
+            <param name="pid_enable_topic_dheading" value="/$(arg robot_name)/ctrl/dynamic_heading/pid_enable" />
+            <param name="pid_enable_topic_ddepth" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable" />
             <param name="limit_between_setpoints" value="0.01" />
             <param name="loop_freq" value="10" />
             <remap from="/actuator_input" to="/$(arg robot_name)/core/thrust_vector_cmd"/>
@@ -23,7 +25,8 @@
           <param name="topic_from_roll_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
           <param name="topic_from_vel_controller" value="/$(arg robot_name)/ctrl/rpm_avg" />
           <param name="topic_to_actuator" value="/actuator_input" />
-          <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable" />
+          <param name="pid_enable_topic_dvel" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable" />
+          <param name="pid_enable_topic_droll" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable" />
           <param name="limit_between_setpoints" value="1" />
           <param name="loop_freq" value="10" />
           <remap from="/actuator_input" to="/$(arg robot_name)/core/thrusters_cmd"/>
@@ -47,6 +50,10 @@
         </include-->
 
         <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_alt_ctrl_REAL.launch" if="$(arg with_alt)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_roll_ctrl_SIM.launch" if="$(arg with_roll)">
             <arg name="robot_name" value="$(arg robot_name)" />
         </include>
         

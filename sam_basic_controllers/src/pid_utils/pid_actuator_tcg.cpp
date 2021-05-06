@@ -15,7 +15,7 @@ bool message_received, enable_state;
 
 void PIDCallback1(const std_msgs::Float64& control_msg)
 {
-  if(abs(prev_control_msg1-control_msg.data) > limit) {
+  if(fabs(prev_control_msg1-control_msg.data) > limit) {
 	control_action.weight_1_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data; // We will use +-2Pi radians, so the +-50offset is not necessary
     	message_received = true;
 	  //control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo
@@ -25,7 +25,7 @@ void PIDCallback1(const std_msgs::Float64& control_msg)
 
 void PIDCallback2(const std_msgs::Float64& control_msg)
 {
-   if(abs(prev_control_msg2-control_msg.data) > limit) {
+   if(fabs(prev_control_msg2-control_msg.data) > limit) {
     	control_action.weight_2_offset_radians = control_msg.data;//transforms.transform.rotation.x;//data;
       	message_received = true;
 	//control_action.data = control_msg.data + 50.;//transforms.transform.rotation.x;//data; //Gazebo

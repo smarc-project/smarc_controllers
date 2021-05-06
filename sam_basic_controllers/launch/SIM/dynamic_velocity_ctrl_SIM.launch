@@ -4,9 +4,12 @@
     <!--The control action is scaled by 100 to reach the right RPM command -->
 
     <node name="dyn_vel_roll_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
-      <param name="Kp" value="5.0" />
+      <!--param name="Kp" value="5.0" />
       <param name="Ki" value="0.1" />
-      <param name="Kd" value="1.0" />
+      <param name="Kd" value="1.0" /-->
+      <param name="Kp" value="0.8" />
+      <param name="Ki" value="0.08" />
+      <param name="Kd" value="0.08" />
       <param name="upper_limit" value="15" />
       <param name="lower_limit" value="-15" />
       <param name="windup_limit" value="10" />
@@ -20,12 +23,16 @@
       <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
       <!--remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
+      <remap from="pid_enable" to="pid_enable" />
      </node>
 
      <node name="dyn_vel_u_pid" pkg="pid" type="controller" ns="dynamic_velocity" output="screen" >
-       <param name="Kp" value="20.0" />
+       <!--param name="Kp" value="80.0" />
        <param name="Ki" value="0.1" />
-       <param name="Kd" value="8.0" />
+       <param name="Kd" value="8.0" /-->
+       <param name="Kp" value="8.0" />
+       <param name="Ki" value="0.2" />
+       <param name="Kd" value="0.4" />
        <param name="upper_limit" value="15" />
        <param name="lower_limit" value="-15" />
        <param name="windup_limit" value="10" />
@@ -38,6 +45,7 @@
        <remap from="setpoint" to="u_setpoint" />
        <!--remap from="/plant_state_pitch" to="state" />
        <remap from="control_effort" to="/control_effort" /-->
+       <remap from="pid_enable" to="pid_enable" />
       </node>
 
 

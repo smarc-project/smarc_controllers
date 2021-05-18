@@ -1,7 +1,7 @@
 <launch>
 
 <arg name="robot_name" default="sam"/>
-<arg name="republish_setpoint" default="false"/>
+<arg name="republish_setpoint" default="true"/>
 
 <!--SET either SIM or REAL to true depending on launch in simulation or real test-->
 <arg name="with_SIM" default="true"/>

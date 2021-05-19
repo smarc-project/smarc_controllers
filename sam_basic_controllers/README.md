@@ -25,6 +25,7 @@ To activate the controllers call the following services ([link](https://github.c
   - _Roll:_ ```/sam/ctrl/toggle_roll_ctrl```
   
   - (_Static Roll TCG:_ ```/sam/ctrl/toggle_tcg_ctrl```) 
+  - (_Dynamic Pitch :_ ```/sam/ctrl/toggle_dpitch_ctrl```) 
 
 e.g. usage: ```rosservice call /sam/ctrl/toggle_vbs_ctrl "data: true"```
 

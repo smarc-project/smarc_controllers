@@ -44,6 +44,10 @@
 	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/>
 	<param name="droll_status_topic" value="/$(arg robot_name)/ctrl/roll_controller_status"/>
 
+	<param name="dpitch_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_dyn_pitch_ctrl"/>	    
+	<param name="dpitch_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_pitch/pid_enable"/>
+	<param name="dpitch_status_topic" value="/$(arg robot_name)/ctrl/pitch_controller_status"/>
+
 
 	<!-- Flag to republish setpoint topics -->
 	<param name="republish_setpoint" value="$(arg republish_setpoint)"/>
@@ -69,7 +73,7 @@
 	<param name="vbs_depth_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs/setpoint"/>
 	<param name="vbs_altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs_alt/setpoint"/>
 	<param name="tcg_roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/tcg/setpoint"/>
-
+	<param name="dpitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_pitch/setpoint"/>
 
 
 

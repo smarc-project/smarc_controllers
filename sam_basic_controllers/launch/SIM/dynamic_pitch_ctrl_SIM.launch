@@ -1,0 +1,42 @@
+<launch>
+
+    <arg name="robot_name" default="sam"/>
+
+    <node name="dyn_pitch_pid_1" pkg="pid" type="controller" ns="dynamic_pitch" output="screen" >
+      <param name="Kp" value="1.0" />
+      <param name="Ki" value="0.0" />
+      <param name="Kd" value="0.0" />
+      <param name="upper_limit" value="0.5" />
+      <param name="lower_limit" value="-0.5" />
+      <param name="windup_limit" value="100" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <param name="angle_error" value="true" />
+      <param name="angle_wrap" value="2.0*3.14159." />
+      <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
+      <param name="topic_from_plant" value="/$(arg robot_name)/dr/yaw" />
+      <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/pitch" /-->
+      <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/dynamic_pitch/angle_error" /-->
+      <param name="topic_from_controller" value="q_setpoint" />
+      <remap from="setpoint" to="setpoint" />
+      <remap from="pid_enable" to="pid_enable" />
+    </node>
+
+     <node name="dyn_pitch_pid_2" pkg="pid" type="controller" ns="dynamic_pitch" output="screen" >
+       <param name="Kp" value="-0.5" />
+       <param name="Ki" value="-0.0" />
+       <param name="Kd" value="-0.01" />
+       <param name="upper_limit" value="0.1" />
+       <param name="lower_limit" value="-0.1" />
+       <param name="windup_limit" value="100" />
+       <param name="max_loop_frequency" value="100.0" />
+       <param name="min_loop_frequency" value="100.0" />
+       <!--CHANGE LAUNCH FILE TO CHOOSE SUBSCRIBER AND PUBLISHER TOPICS!! /-->
+       <param name="topic_from_plant" value="/$(arg robot_name)/dr/q" />
+       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/q_feedback" /-->
+       <param name="topic_from_controller" value="/$(arg robot_name)/ctrl/elevator_setpoint" />
+       <remap from="setpoint" to="q_setpoint" />
+       <remap from="pid_enable" to="pid_enable" />
+      </node>
+
+</launch>

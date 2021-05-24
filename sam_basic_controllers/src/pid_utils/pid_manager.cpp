@@ -143,6 +143,10 @@ namespace pid_manager_cpp
         pnh.param<std::string>("droll_ctrl_srv_name", droll_ctrl_srv_name_, "ctrl/toggle_roll_ctrl");
         pnh.param<std::string>("droll_enable_topic", droll_enable_topic_, "sam/ctrl/dynamic_roll/pid_enable");
         pnh.param<std::string>("droll_status_topic", droll_status_topic_, "sam/ctrl/roll_controller_status");
+
+        pnh.param<std::string>("dpitch_ctrl_srv_name", dpitch_ctrl_srv_name_, "ctrl/toggle_dyn_pitch_ctrl");
+        pnh.param<std::string>("dpitch_enable_topic", dpitch_enable_topic_, "sam/ctrl/dynamic_pitch/pid_enable");
+        pnh.param<std::string>("dpitch_status_topic", dpitch_status_topic_, "sam/ctrl/pitch_controller_status");
        
         pnh.param<bool>("republish_setpoint", republish_setpoint_, false);
 
@@ -164,7 +168,8 @@ namespace pid_manager_cpp
         //Overactuation to include vbs and tcg for depth and altitude:
         pnh.param<std::string>("vbs_depth_setpoint_topic_repub", vbs_depth_setpoint_topic_repub_, "sam/ctrl/vbs/setpoint");
         pnh.param<std::string>("vbs_altitude_setpoint_topic_repub", vbs_altitude_setpoint_topic_repub_, "sam/ctrl/vbs_alt/setpoint");
-        pnh.param<std::string>("tcg_roll_setpoint_topic_repub", tcg_roll_setpoint_topic_repub_, "sam/ctrl/tcg/setpoint");        
+        pnh.param<std::string>("tcg_roll_setpoint_topic_repub", tcg_roll_setpoint_topic_repub_, "sam/ctrl/tcg/setpoint");  
+        pnh.param<std::string>("dpitch_setpoint_topic_repub", dpitch_setpoint_topic_repub_, "sam/ctrl/dynamic_pitch/setpoint");        
 
         // create controller services
         PIDToggleService vbs(nh_,vbs_ctrl_srv_name_,vbs_enable_topic_,vbs_status_topic_);
@@ -176,6 +181,7 @@ namespace pid_manager_cpp
         PIDToggleService dalt(nh_,dalt_ctrl_srv_name_, dalt_enable_topic_,dalt_status_topic_);
         PIDToggleService dvel(nh_,dvel_ctrl_srv_name_, dvel_enable_topic_,dvel_status_topic_);
         PIDToggleService droll(nh_,droll_ctrl_srv_name_, droll_enable_topic_,droll_status_topic_);
+        PIDToggleService dpitch(nh_,dpitch_ctrl_srv_name_, dpitch_enable_topic_,dpitch_status_topic_);
 
         //Assign republishing of setpoints
         PIDSetpointRepub yaw(nh_,yaw_setpoint_topic_,yaw_setpoint_topic_repub_);
@@ -188,6 +194,7 @@ namespace pid_manager_cpp
         PIDSetpointRepub vbs_depth(nh_,depth_setpoint_topic_,vbs_depth_setpoint_topic_repub_);
         PIDSetpointRepub vbs_altitude(nh_,altitude_setpoint_topic_,vbs_altitude_setpoint_topic_repub_);
         PIDSetpointRepub tcg_roll(nh_,roll_setpoint_topic_,tcg_roll_setpoint_topic_repub_);
+        PIDSetpointRepub dyn_pitch(nh_,pitch_setpoint_topic_,dpitch_setpoint_topic_repub_);
 
 
         ros::Rate idle_rate(10);
@@ -204,6 +211,7 @@ namespace pid_manager_cpp
             dalt.enable_pub_.publish(dalt.enable_msg);
             dvel.enable_pub_.publish(dvel.enable_msg);
             droll.enable_pub_.publish(droll.enable_msg);
+            dpitch.enable_pub_.publish(dpitch.enable_msg);
 
 
             //Publish status messages
@@ -216,6 +224,7 @@ namespace pid_manager_cpp
             dalt.status_pub_.publish(dalt.status_msg);
             dvel.status_pub_.publish(dvel.status_msg);
             droll.status_pub_.publish(droll.status_msg);
+            dpitch.status_pub_.publish(dpitch.status_msg);
 
             //TODO: Republish setpoints to specific controllers- currently only dynamic, later add a logic.
             if(republish_setpoint_)
@@ -230,7 +239,8 @@ namespace pid_manager_cpp
                 //overactuation:
                 vbs_depth.setpoint_pub_.publish(vbs_depth.setpoint);
                 vbs_altitude.setpoint_pub_.publish(vbs_altitude.setpoint);
-                tcg_roll.setpoint_pub_.publish(tcg_roll.setpoint);           
+                tcg_roll.setpoint_pub_.publish(tcg_roll.setpoint); 
+                dyn_pitch.setpoint_pub_.publish(dyn_pitch.setpoint);           
             }
             
             idle_rate.sleep();

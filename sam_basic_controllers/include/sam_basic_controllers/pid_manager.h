@@ -120,6 +120,10 @@ namespace pid_manager_cpp
         std::string droll_status_topic_;
         std::string droll_ctrl_srv_name_;
 
+        std::string dpitch_enable_topic_;
+        std::string dpitch_status_topic_;
+        std::string dpitch_ctrl_srv_name_;
+
         bool republish_setpoint_;
 
         std::string yaw_setpoint_topic_;
@@ -139,7 +143,7 @@ namespace pid_manager_cpp
         std::string vbs_depth_setpoint_topic_repub_;
         std::string vbs_altitude_setpoint_topic_repub_;
         std::string tcg_roll_setpoint_topic_repub_;
-
+        std::string dpitch_setpoint_topic_repub_;
     };
 
 } // namespace pid_manager_cpp

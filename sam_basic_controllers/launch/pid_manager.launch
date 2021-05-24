@@ -40,9 +40,13 @@
 
 	<param name="droll_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_roll_ctrl"/>	
 	<!--We can use a combined velocity and roll controller, same enable topic, or we can also use separate controller, see commented line-->    
-	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable"/>
-	<!--param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/-->
+	<!--param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable"/-->
+	<param name="droll_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable"/>
 	<param name="droll_status_topic" value="/$(arg robot_name)/ctrl/roll_controller_status"/>
+
+	<param name="dpitch_ctrl_srv_name" value="/$(arg robot_name)/ctrl/toggle_dyn_pitch_ctrl"/>	    
+	<param name="dpitch_enable_topic" value="/$(arg robot_name)/ctrl/dynamic_pitch/pid_enable"/>
+	<param name="dpitch_status_topic" value="/$(arg robot_name)/ctrl/pitch_controller_status"/>
 
 
 	<!-- Flag to republish setpoint topics -->
@@ -63,13 +67,13 @@
 	<param name="speed_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/u_setpoint"/>
 	<param name="pitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/lcg/setpoint"/>
 	<!--We can use a combined velocity and roll controller, same enable topic, or we can also use separate controller, see commented line-->    
-	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/roll_setpoint"/>
-	<!--param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/-->
+	<!--param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_velocity/roll_setpoint"/-->
+	<param name="roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_roll/setpoint"/>
 	<!--Including overactuation in depth, altitude and roll with vbs and tcg:-->    
 	<param name="vbs_depth_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs/setpoint"/>
 	<param name="vbs_altitude_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/vbs_alt/setpoint"/>
 	<param name="tcg_roll_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/tcg/setpoint"/>
-
+	<param name="dpitch_setpoint_topic_repub" value="/$(arg robot_name)/ctrl/dynamic_pitch/setpoint"/>
 
 
 

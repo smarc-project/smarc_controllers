@@ -1,0 +1,70 @@
+<launch>
+
+<arg name="robot_name" default="sam"/>
+<arg name="with_heading" default="true"/>
+<arg name="with_depth" default="true"/>
+<arg name="with_velocity" default="true"/>
+<arg name="with_alt" default="true"/>
+<arg name="with_roll" default="false"/>
+<arg name="with_pitch" default="true"/>
+
+<group ns="$(arg robot_name)">
+    <group ns="ctrl">
+
+        <node name="pid_actuator_tv" pkg="sam_basic_controllers" type="pid_actuator_tv">
+            <param name="topic_from_controller_1" value="/$(arg robot_name)/ctrl/elevator_setpoint" />
+            <param name="topic_from_controller_2" value="/$(arg robot_name)/ctrl/rudder_setpoint" />
+            <param name="topic_to_actuator" value="/actuator_input" />
+            <param name="pid_enable_topic_dheading" value="/$(arg robot_name)/ctrl/dynamic_heading/pid_enable" />
+	    <param name="pid_enable_topic_ddepth" value="/$(arg robot_name)/ctrl/dynamic_depth/pid_enable" />
+            <param name="limit_between_setpoints" value="0.01" />
+            <param name="loop_freq" value="10" />
+            <remap from="/actuator_input" to="/$(arg robot_name)/core/thrust_vector_cmd"/>
+        </node>
+
+        <node name="pid_actuator_prop" pkg="sam_basic_controllers" type="pid_actuator_prop" >
+          <param name="topic_from_roll_controller" value="/$(arg robot_name)/ctrl/rpm_diff" />
+          <param name="topic_from_vel_controller" value="/$(arg robot_name)/ctrl/rpm_avg" />
+          <param name="topic_to_actuator_1" value="/actuator_input_1" />
+          <param name="topic_to_actuator_2" value="/actuator_input_2" />
+          <param name="pid_enable_topic_dvel" value="/$(arg robot_name)/ctrl/dynamic_velocity/pid_enable" />
+          <param name="pid_enable_topic_droll" value="/$(arg robot_name)/ctrl/dynamic_roll/pid_enable" />
+          <param name="limit_between_setpoints" value="1" />
+          <param name="loop_freq" value="10" />
+          <remap from="/actuator_input_1" to="/$(arg robot_name)/core/thruster1_cmd"/>
+	      <remap from="/actuator_input_2" to="/$(arg robot_name)/core/thruster2_cmd"/>
+        </node>
+
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_depth_ctrl_SIM.launch" if="$(arg with_depth)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_heading_ctrl_SIM.launch" if="$(arg with_heading)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_velocity_ctrl_SIM.launch" if="$(arg with_velocity)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <!--include file="$(find sam_basic_controllers)/launch/dynamic_roll_ctrl_SIM.launch" if="$(arg with_roll)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include-->
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_alt_ctrl_SIM.launch" if="$(arg with_alt)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_roll_ctrl_SIM.launch" if="$(arg with_roll)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+
+        <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_pitch_ctrl_SIM.launch" if="$(arg with_pitch)">
+            <arg name="robot_name" value="$(arg robot_name)" />
+        </include>
+        
+    </group>
+</group>
+
+</launch>

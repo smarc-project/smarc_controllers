@@ -4,8 +4,8 @@
 
     <node name="dyn_depth_pid_1" pkg="pid" type="controller" ns="dynamic_depth" output="screen" >
       <param name="Kp" value="0.8" />
-      <param name="Ki" value="0.0" />
-      <param name="Kd" value="0.0" />
+      <param name="Ki" value="0.008" />
+      <param name="Kd" value="0.008" />
       <param name="upper_limit" value="0.5" />
       <param name="lower_limit" value="-0.5" />
       <param name="windup_limit" value="100" />
@@ -25,7 +25,7 @@
      <node name="dyn_depth_pid_2" pkg="pid" type="controller" ns="dynamic_depth" output="screen" >
        <param name="Kp" value="-0.5" />
        <param name="Ki" value="-0.0" />
-       <param name="Kd" value="-0.0" />
+       <param name="Kd" value="-0.005" />
        <param name="upper_limit" value="0.15" />
        <param name="lower_limit" value="-0.15" />
        <param name="windup_limit" value="100" />

@@ -30,11 +30,12 @@
        <!--param name="Kp" value="80.0" />
        <param name="Ki" value="0.1" />
        <param name="Kd" value="8.0" /-->
-       <param name="Kp" value="8.0" />
-       <param name="Ki" value="0.2" />
-       <param name="Kd" value="0.4" />
-       <param name="upper_limit" value="15" />
-       <param name="lower_limit" value="-15" />
+       <param name="Kp" value="45.00" />
+       <param name="Ki" value="0.05" />
+       <param name="Kd" value="6.00" />
+       <!--RPM can be set to max 1500RPM, Kp can be 40 instead of 45, Ki can be 0 for smoother yet slower control! /-->
+       <param name="upper_limit" value="20" />
+       <param name="lower_limit" value="-20" />
        <param name="windup_limit" value="10" />
        <param name="max_loop_frequency" value="100.0" />
        <param name="min_loop_frequency" value="100.0" />

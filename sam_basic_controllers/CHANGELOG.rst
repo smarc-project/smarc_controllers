@@ -2,8 +2,8 @@
 Changelog for package sam_basic_controllers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.3 (2022-03-30)
+------------------
 * Merge pull request `#4 <https://github.com/smarc-project/smarc_controllers/issues/4>`_ from svbhat/noetic-devel
   Enabled topics republishing, added a 'dynamic_pitch' controller
 * Included a dynamic pitch controller.

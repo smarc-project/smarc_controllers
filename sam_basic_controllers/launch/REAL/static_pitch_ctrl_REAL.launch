@@ -8,7 +8,7 @@
       <param name="pid_enable_topic" value="/$(arg robot_name)/ctrl/lcg/pid_enable" />
       <param name="abort_topic" value="/$(arg robot_name)/abort" />
       <param name="limit_between_setpoints" value="1" />
-      <param name="loop_freq" value="50" />
+      <param name="loop_freq" value="10" />
       <remap from="/actuator_input" to="/$(arg robot_name)/core/lcg_cmd"/>
     </node>
 

@@ -2,8 +2,8 @@
 
 <arg name="robot_name" default="sam"/>
 <!--SET either SIM or REAL to true depending on launch in simulation or real test-->
-<arg name="with_SIM" default="true"/>
-<arg name="with_REAL" default="false"/>
+<arg name="with_SIM" default="false"/>
+<arg name="with_REAL" default="true"/>
 
     <include file="$(find sam_basic_controllers)/launch/SIM/dynamic_controllers_SIM.launch" if="$(arg with_SIM)">
         <arg name="robot_name" value="$(arg robot_name)" />

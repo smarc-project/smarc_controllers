@@ -49,7 +49,7 @@ int main(int argc, char** argv){
   node_priv.param<std::string>("pid_enable_topic", pid_enable_topic_, "pid_enable");
   node_priv.param<std::string>("abort_topic", abort_topic_, "pid_enable");
   node_priv.param<double>("limit_between_setpoints", limit, 5);
-  node_priv.param<double>("loop_freq", freq, 50);
+  node_priv.param<double>("loop_freq", freq, 5);
 
   //initiate subscribers
   ros::Subscriber pid_action_sub = node.subscribe(topic_from_controller_, 1, PIDCallback);

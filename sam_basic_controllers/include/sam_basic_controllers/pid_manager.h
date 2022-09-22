@@ -57,6 +57,7 @@ namespace pid_manager_cpp
         //variables
         ros::NodeHandle nh_;
         std_msgs::Float64 setpoint;
+	bool setpoint_available;
         //std::string setpoint_topic_;
         //std::string setpoint_topic_repub_;
 

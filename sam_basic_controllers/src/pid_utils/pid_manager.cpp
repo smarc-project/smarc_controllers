@@ -99,6 +99,7 @@ namespace pid_manager_cpp
     void PIDSetpointRepub::setpoint_cb(const std_msgs::Float64& setpoint_)
     {
         setpoint.data = setpoint_.data;
+	setpoint_available = true;
         ROS_INFO_THROTTLE(1.0, "[ pid_manager ]  Republishing setpoint");
     } 
       
@@ -197,7 +198,7 @@ namespace pid_manager_cpp
         PIDSetpointRepub dyn_pitch(nh_,pitch_setpoint_topic_,dpitch_setpoint_topic_repub_);
 
 
-        ros::Rate idle_rate(10);
+	ros::Rate idle_rate(1);
         while (ros::ok())
         {
 
@@ -215,7 +216,7 @@ namespace pid_manager_cpp
 
 
             //Publish status messages
-            vbs.status_pub_.publish(vbs.status_msg);
+	    vbs.status_pub_.publish(vbs.status_msg);
             lcg.status_pub_.publish(lcg.status_msg);
             tcg.status_pub_.publish(tcg.status_msg);
             vbs_alt.status_pub_.publish(vbs_alt.status_msg);
@@ -225,22 +226,42 @@ namespace pid_manager_cpp
             dvel.status_pub_.publish(dvel.status_msg);
             droll.status_pub_.publish(droll.status_msg);
             dpitch.status_pub_.publish(dpitch.status_msg);
+	    
 
             //TODO: Republish setpoints to specific controllers- currently only dynamic, later add a logic.
             if(republish_setpoint_)
             {
                 //republishing controller setpoints
-                yaw.setpoint_pub_.publish(yaw.setpoint);
-                depth.setpoint_pub_.publish(depth.setpoint);
-                altitude.setpoint_pub_.publish(altitude.setpoint);
-                speed.setpoint_pub_.publish(speed.setpoint);  
-                pitch.setpoint_pub_.publish(pitch.setpoint);                
-                roll.setpoint_pub_.publish(roll.setpoint);           
-                //overactuation:
-                vbs_depth.setpoint_pub_.publish(vbs_depth.setpoint);
-                vbs_altitude.setpoint_pub_.publish(vbs_altitude.setpoint);
-                tcg_roll.setpoint_pub_.publish(tcg_roll.setpoint); 
-                dyn_pitch.setpoint_pub_.publish(dyn_pitch.setpoint);           
+                if(yaw.setpoint_available)
+			yaw.setpoint_pub_.publish(yaw.setpoint);
+                
+		if(depth.setpoint_available)
+			depth.setpoint_pub_.publish(depth.setpoint);
+                
+		if(altitude.setpoint_available)
+			altitude.setpoint_pub_.publish(altitude.setpoint);
+                
+		if(speed.setpoint_available)
+			speed.setpoint_pub_.publish(speed.setpoint);  
+                
+		if(pitch.setpoint_available)
+			pitch.setpoint_pub_.publish(pitch.setpoint);                
+                
+		if(roll.setpoint_available)
+			roll.setpoint_pub_.publish(roll.setpoint);           
+                
+		//overactuation:
+                if(vbs_depth.setpoint_available)
+			vbs_depth.setpoint_pub_.publish(vbs_depth.setpoint);
+                
+		if(vbs_altitude.setpoint_available)
+			vbs_altitude.setpoint_pub_.publish(vbs_altitude.setpoint);
+                
+		if(tcg_roll.setpoint_available)
+			tcg_roll.setpoint_pub_.publish(tcg_roll.setpoint); 
+                
+		if(dyn_pitch.setpoint_available)
+			dyn_pitch.setpoint_pub_.publish(dyn_pitch.setpoint);           
             }
             
             idle_rate.sleep();

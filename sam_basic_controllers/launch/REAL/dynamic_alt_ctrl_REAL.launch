@@ -17,8 +17,8 @@
       <!--param name="topic_from_plant" value="/$(arg robot_name)/ctrl/odom_listener/alt_feedback" /..>
       <param name="topic_from_controller" value="pitch_setpoint" />
       <remap from="setpoint" to="setpoint" />
-      <!--remap from="pitch_setpoint" to="/pitch_setpoint" /-->
-      <!--remap from="/plant_state_pitch" to="state" />
+      <remap from="pitch_setpoint" to="/pitch_setpoint" />
+      <remap from="/plant_state_pitch" to="state" />
       <remap from="control_effort" to="/control_effort" /-->
       <remap from="pid_enable" to="pid_enable" />
      </node>

@@ -1,0 +1,42 @@
+<launch>
+
+    <arg name="robot_name" default="sam"/>
+
+      <node name="heading_pid" pkg="pid" type="controller" output="screen" >
+       <param name="Kp" value="1." />
+       <param name="Ki" value="0.0" />
+       <param name="Kd" value="0.0" />
+       <param name="upper_limit" value="0.1" />
+       <param name="lower_limit" value="-0.1" />
+       <param name="windup_limit" value="1" />
+       <param name="max_loop_frequency" value="100.0" />
+       <param name="min_loop_frequency" value="1.0" />
+       <param name="topic_from_plant" value="heading_pid/state" />  <!-- This must be always zero -->
+       <param name="topic_from_controller" value="rudder_effort" />
+       <remap from="setpoint" to="heading_pid/setpoint" />
+       <remap from="pid_enable" to="pid_enable" />
+      </node>
+
+     <node name="elevator_pid" pkg="pid" type="controller" output="screen" >
+       <param name="Kp" value="0.1" />
+       <param name="Ki" value="0.0" />
+       <param name="Kd" value="0.0" />
+       <param name="upper_limit" value="0.1" />
+       <param name="lower_limit" value="-0.1" />
+       <param name="windup_limit" value="1" />
+       <param name="max_loop_frequency" value="100.0" />
+       <param name="min_loop_frequency" value="1.0" />
+       <param name="topic_from_plant" value="/$(arg robot_name)/dr/depth" />
+       <param name="topic_from_controller" value="elevator_effort" />
+       <remap from="setpoint" to="elevator_pid/setpoint" />
+       <remap from="pid_enable" to="pid_enable" />
+      </node>
+
+      <node name="thruster_ctrl_node" pkg="sam_basic_controllers" type="thruster_ctrl_node.py">
+        <!-- <param name="rudder_pid_effort" value="/$(arg robot_name)/ctrl/rudder_effort" /> -->
+        <param name="rudder_pid_effort" value="rudder_effort" />
+        <param name="elevator_pid_effort" value="elevator_effort" />
+        <param name="thrust_cmd_topic" value="/$(arg robot_name)/core/thrust_vector_cmd" />
+      </node>
+
+</launch>

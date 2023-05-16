@@ -1,80 +1,95 @@
-//Node to forward PID control action to UAVCAN by publishing to sam_msgs.
-//Sriharsha Bhat, 05.12.2018
-
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
 #include <sam_msgs/PercentStamped.h>
 //#include <std_msgs/Empty.h>
 #include <std_msgs/Bool.h>
 
-sam_msgs::PercentStamped control_action;
-double prev_control_msg,limit, freq;
-std::string topic_from_controller_, topic_to_actuator_,pid_enable_topic_,abort_topic_;
-bool message_received;
-bool emergency_state, enable_state;
+class PIDTrim{
 
-void PIDCallback(const std_msgs::Float64& control_msg)
-{
-  if(fabs(prev_control_msg-control_msg.data) > limit) {
-	message_received = true;
-	control_action.value = control_msg.data + 50.;//transforms.transform.rotation.x;//data;
+  public:
+    
+    std::string topic_from_controller_, topic_to_actuator_, topic_from_plant_, setpoint_req_, setpoint_res_;
+    ros::NodeHandle *nh_priv_;
+    ros::NodeHandle *nh_;
+    ros::Subscriber pid_action_sub, plant_sub, sp_sub, state_sub;
+    ros::Publisher control_action_pub, setpoint_pub;
+
+    double setpoint_, error_t_, setpoint_tolerance_;
+    bool setpoint_rcv_;
+
+    PIDTrim(ros::NodeHandle &nh_priv, ros::NodeHandle &nh) : nh_priv_(&nh_priv), nh_(&nh)
+    {
+      nh_priv_->param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
+      nh_priv_->param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
+      nh_priv_->param<std::string>("topic_from_plant", topic_from_plant_, "uavcan_lcg_command");
+      nh_priv_->param<std::string>("setpoint_req", setpoint_req_, "uavcan_lcg_command");
+      nh_priv_->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
+      nh_priv_->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
+
+      setpoint_rcv_ = false;
+
+      // initiate subscribers
+      pid_action_sub = nh_->subscribe(topic_from_controller_, 1, &PIDTrim::PIDCallback, this);
+      plant_sub = nh_->subscribe(topic_from_plant_, 1, &PIDTrim::PIDCallback, this);
+      sp_sub = nh_->subscribe(setpoint_req_, 1, &PIDTrim::SetpointCallback, this);
+      state_sub = nh_->subscribe(topic_from_plant_, 1, &PIDTrim::PlantCallback, this);
+
+      // initiate publishers
+      control_action_pub = nh_->advertise<sam_msgs::PercentStamped>(topic_to_actuator_, 10);
+      setpoint_pub = nh_->advertise<std_msgs::Float64>(setpoint_res_, 10);
     }
-ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control action heard: %f", control_msg.data);
-}
 
-void abortCB(const std_msgs::Bool& abort_msg){
-	if(abort_msg.data == true){
-	   emergency_state = true;
-	}
-	else emergency_state = false;
-}
+    // Gets setpoint from GUI
+    void SetpointCallback(const std_msgs::Float64 & setpoint)
+    {
+      setpoint_ = setpoint.data;
+      setpoint_rcv_ = true;
+    }
+    
+    // Checks current error in the controller: if over tolerance, publish setpoint to PID. Else, stop PID 
+    // by not publishing setpoints anymore
+    void PlantCallback(const std_msgs::Float64 &plant_state)
+    {
+      if (setpoint_rcv_){
+        if (fabs(setpoint_ - plant_state.data) > setpoint_tolerance_){
+          std_msgs::Float64 msg;
+          msg.data = setpoint_;
+          setpoint_pub.publish(msg);
+        }
+        else{
+          ROS_INFO_NAMED(ros::this_node::getName(), "Setpoint reached %f", plant_state.data);
+          setpoint_rcv_ = false;
+        }
+      } 
+    }
 
-void enableCB(const std_msgs::Bool enable_msg){
-	if(enable_msg.data == false)
-  {
-    enable_state = false;
-  }
-  else enable_state = true;
-}
+    // This one just republishes adding the feedforward term
+    void PIDCallback(const std_msgs::Float64 &control_msg)
+    {
+      sam_msgs::PercentStamped control_action;
+      control_action.value = control_msg.data + 50.; // transforms.transform.rotation.x;//data;
+      control_action_pub.publish(control_action);
+    }
+};
+
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "pid_actuator");
 
-  ros::NodeHandle node;
-  message_received = false;
-
   ros::NodeHandle node_priv("~");
-  node_priv.param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
-  node_priv.param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
-  node_priv.param<std::string>("pid_enable_topic", pid_enable_topic_, "pid_enable");
-  node_priv.param<std::string>("abort_topic", abort_topic_, "pid_enable");
-  node_priv.param<double>("limit_between_setpoints", limit, 5);
-  node_priv.param<double>("loop_freq", freq, 5);
+  ros::NodeHandle node;
 
-  //initiate subscribers
-  ros::Subscriber pid_action_sub = node.subscribe(topic_from_controller_, 1, PIDCallback);
-  ros::Subscriber abort_sub = node.subscribe(abort_topic_, 10, abortCB);
-  ros::Subscriber enable_sub = node.subscribe(pid_enable_topic_, 10, enableCB);
+  PIDTrim* pid_obj = new PIDTrim(node_priv, node);
 
-  //initiate publishers
-  ros::Publisher control_action_pub = node.advertise<sam_msgs::PercentStamped>(topic_to_actuator_, freq);
-  emergency_state = false;
-  enable_state = true;
+  ros::spin();
 
-  ros::Rate rate(freq);
+  ros::waitForShutdown();
 
-  while (node.ok()){
-
-      if (message_received && !emergency_state && enable_state)
-      {  
-    	control_action_pub.publish(control_action);
-    	prev_control_msg = control_action.value;
-    	ROS_INFO_THROTTLE(1.0, "[ pid_actuator ]  Control forwarded: %f", control_action.value);
-      }
-
-    rate.sleep();
-    ros::spinOnce();
-
+  if (!ros::ok())
+  {
+      delete pid_obj;
   }
+  ROS_INFO("PID trim finished");
+
   return 0;
-};
+}

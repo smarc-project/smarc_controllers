@@ -32,7 +32,7 @@
                     <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" />
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
-                    <param name="setpoint_tolerance" value="0.2" />
+                    <param name="setpoint_tolerance" value="0.1" />
                 </node>
 
                 <node name="vbs_pid" pkg="pid" type="controller" output="screen">

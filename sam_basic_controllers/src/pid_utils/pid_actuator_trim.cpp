@@ -14,7 +14,7 @@ class PIDTrim{
     ros::Subscriber pid_action_sub, plant_sub, sp_sub, state_sub;
     ros::Publisher control_action_pub, setpoint_pub;
 
-    double setpoint_, error_t_, setpoint_tolerance_, neutral_setpoint_;
+    double setpoint_, error_t_, setpoint_tolerance_, neutral_setpoint_, ff_term_;
     bool setpoint_rcv_;
 
     PIDTrim(ros::NodeHandle &nh_priv, ros::NodeHandle &nh) : nh_priv_(&nh_priv), nh_(&nh)
@@ -26,6 +26,7 @@ class PIDTrim{
       nh_priv_->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
       nh_priv_->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
       nh_priv_->param<double>("neutral_point", neutral_setpoint_, 0.1);
+      nh_priv_->param<double>("ff_term", ff_term_, 0.1);
 
       setpoint_rcv_ = false;
 
@@ -72,7 +73,7 @@ class PIDTrim{
     void PIDCallback(const std_msgs::Float64 &control_msg)
     {
       sam_msgs::PercentStamped control_action;
-      control_action.value = control_msg.data + 50.;
+      control_action.value = control_msg.data + ff_term_;
       control_action_pub.publish(control_action);
     }
 };

@@ -31,7 +31,6 @@ class PIDTrim{
 
       // initiate subscribers
       pid_action_sub = nh_->subscribe(topic_from_controller_, 1, &PIDTrim::PIDCallback, this);
-      plant_sub = nh_->subscribe(topic_from_plant_, 1, &PIDTrim::PIDCallback, this);
       sp_sub = nh_->subscribe(setpoint_req_, 1, &PIDTrim::SetpointCallback, this);
       state_sub = nh_->subscribe(topic_from_plant_, 1, &PIDTrim::PlantCallback, this);
 

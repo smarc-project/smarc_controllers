@@ -5,26 +5,46 @@
     <group ns="$(arg namespace)">
         <group ns="ctrl">
 
-            <include file="$(find sam_basic_controllers)/launch/thrusters_ctrl.launch" >
-                <arg name="namespace" value="$(arg namespace)"/>
-            </include>
+            <!-- Thrusters controllers -->
+            <node name="heading_pid" pkg="pid" type="controller" output="screen">
+                <param name="Kp" value="1." />
+                <param name="Ki" value="0.0" />
+                <param name="Kd" value="0.0" />
+                <param name="upper_limit" value="0.1" />
+                <param name="lower_limit" value="-0.1" />
+                <param name="windup_limit" value="1" />
+                <param name="max_loop_frequency" value="100.0" />
+                <param name="min_loop_frequency" value="1.0" />
+                <param name="topic_from_plant" value="heading_pid/state" />  <!-- This must be always zero -->
+                <param name="topic_from_controller" value="heading_pid/ctrl_effort" />
+                <remap from="setpoint" to="heading_pid/setpoint" />
+                <remap from="pid_enable" to="heading_pid/pid_enable" />
+                <param name="setpoint_timeout" value="0.1" />
+            </node>
 
-            <!-- TODO: integrate/clean these ones as well -->
-            <!-- <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_velocity_ctrl_REAL.launch" if="$(arg with_velocity)">
-                <arg name="namespace" value="$(arg namespace)" />
-            </include>
+            <node name="elevator_pid" pkg="pid" type="controller" output="screen">
+                <param name="Kp" value="0.1" />
+                <param name="Ki" value="0.0" />
+                <param name="Kd" value="0.0" />
+                <param name="upper_limit" value="0.1" />
+                <param name="lower_limit" value="-0.1" />
+                <param name="windup_limit" value="1" />
+                <param name="max_loop_frequency" value="100.0" />
+                <param name="min_loop_frequency" value="1.0" />
+                <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" />
+                <param name="topic_from_controller" value="elevator_pid/ctrl_effort" />
+                <remap from="setpoint" to="elevator_pid/setpoint" />
+                <remap from="pid_enable" to="elevator_pid/pid_enable" />
+                <param name="setpoint_timeout" value="0.1" />
+            </node>
 
-            <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_alt_ctrl_REAL.launch" if="$(arg with_alt)">
-                <arg name="namespace" value="$(arg namespace)" />
-            </include>
+            <node name="thruster_ctrl_node" pkg="sam_basic_controllers" type="thruster_ctrl_node.py"  output="screen">
+                <param name="rudder_pid_effort" value="heading_pid/ctrl_effort" />
+                <param name="elevator_pid_effort" value="elevator_pid/ctrl_effort" />
+                <param name="thrust_cmd_topic" value="/$(arg namespace)/core/thrust_vector_cmd" />
+            </node>
 
-            <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_roll_ctrl_REAL.launch" if="$(arg with_roll)">
-                <arg name="namespace" value="$(arg namespace)" />
-            </include>
-
-            <include file="$(find sam_basic_controllers)/launch/REAL/dynamic_pitch_ctrl_REAL.launch" if="$(arg with_pitch)">
-                <arg name="namespace" value="$(arg namespace)" />
-            </include> -->
+            <!-- VBS depth control -->
             <group ns="vbs">
                 <node name="pid_actuator_vbs" pkg="sam_basic_controllers" type="pid_actuator_trim" output="screen">
                     <param name="topic_from_controller" value="control_action" />
@@ -32,7 +52,8 @@
                     <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" />
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
-                    <param name="setpoint_tolerance" value="0.1" />
+                    <param name="setpoint_tolerance" value="0.2" />
+                    <param name="neutral_point" value="70" />
                 </node>
 
                 <node name="vbs_pid" pkg="pid" type="controller" output="screen">
@@ -52,6 +73,7 @@
                 </node>
             </group>
 
+            <!-- LCG pitch control -->
             <group ns="lcg">
                 <node name="pid_actuator_lcg" pkg="sam_basic_controllers" type="pid_actuator_trim"  output="screen" >
                     <param name="topic_from_controller" value="control_action" />
@@ -60,6 +82,7 @@
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
                     <param name="setpoint_tolerance" value="0.1" />
+                    <param name="neutral_point" value="50" />
                 </node>
 
                 <node name="lcg_pid" pkg="pid" type="controller" ns="lcg" output="screen">
@@ -78,35 +101,6 @@
                     <param name="setpoint_timeout" value="0.1" /> 
                 </node>
             </group>
-
-
-            <!-- <group ns="tcg">
-
-                <node name="pid_actuator_tcg" pkg="sam_basic_controllers" type="pid_actuator_tcg" ns="tcg" >
-                    <param name="topic_from_controller_1" value="control_action" />
-                    <param name="topic_from_controller_2" value="control_action" />
-                    <param name="topic_to_actuator" value="/actuator_input" />
-                    <param name="pid_enable_topic" value="/$(arg namespace)/ctrl/tcg/pid_enable" />
-                    <param name="limit_between_setpoints" value="0.01" />
-                    <param name="loop_freq" value="50" />
-                    <remap from="/actuator_input" to="/$(arg namespace)/core/tcg_cmd"/>
-                </node>
-
-                <node name="tcg_pid" pkg="pid" type="controller" ns="tcg" output="screen" >
-                    <param name="Kp" value="5.0" />
-                    <param name="Ki" value="5.0" />
-                    <param name="Kd" value="2.0" />
-                    <param name="upper_limit" value="3.1415" />
-                    <param name="lower_limit" value="-3.1415" />
-                    <param name="windup_limit" value="10" />
-                    <param name="max_loop_frequency" value="100.0" />
-                    <param name="min_loop_frequency" value="100.0" />
-                    <param name="topic_from_plant" value="/$(arg namespace)/dr/roll" />
-                    <param name="topic_from_controller" value="control_action" />
-                    <remap from="setpoint" to="setpoint" />
-                    <remap from="pid_enable" to="pid_enable" />
-                </node>
-            </group> -->
         
         </group>
     </group>

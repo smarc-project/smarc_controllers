@@ -14,7 +14,7 @@ class PIDTrim{
     ros::Subscriber pid_action_sub, plant_sub, sp_sub, state_sub;
     ros::Publisher control_action_pub, setpoint_pub;
 
-    double setpoint_, error_t_, setpoint_tolerance_;
+    double setpoint_, error_t_, setpoint_tolerance_, neutral_setpoint_;
     bool setpoint_rcv_;
 
     PIDTrim(ros::NodeHandle &nh_priv, ros::NodeHandle &nh) : nh_priv_(&nh_priv), nh_(&nh)
@@ -25,6 +25,7 @@ class PIDTrim{
       nh_priv_->param<std::string>("setpoint_req", setpoint_req_, "uavcan_lcg_command");
       nh_priv_->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
       nh_priv_->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
+      nh_priv_->param<double>("neutral_point", neutral_setpoint_, 0.1);
 
       setpoint_rcv_ = false;
 
@@ -59,6 +60,11 @@ class PIDTrim{
         else{
           ROS_INFO_NAMED(ros::this_node::getName(), "Setpoint reached %f", plant_state.data);
           setpoint_rcv_ = false;
+
+          // When the setpoint has been reached, set actuator to neutral to maintain position
+          sam_msgs::PercentStamped control_action;
+          control_action.value = neutral_setpoint_; 
+          control_action_pub.publish(control_action);
         }
       } 
     }
@@ -67,7 +73,7 @@ class PIDTrim{
     void PIDCallback(const std_msgs::Float64 &control_msg)
     {
       sam_msgs::PercentStamped control_action;
-      control_action.value = control_msg.data + 50.; // transforms.transform.rotation.x;//data;
+      control_action.value = control_msg.data + 50.;
       control_action_pub.publish(control_action);
     }
 };

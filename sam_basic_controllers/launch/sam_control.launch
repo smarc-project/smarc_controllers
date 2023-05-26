@@ -53,6 +53,7 @@
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
                     <param name="setpoint_tolerance" value="0.2" />
+                    <param name="neutral_point" value="70" />
                 </node>
 
                 <node name="vbs_pid" pkg="pid" type="controller" output="screen">
@@ -81,6 +82,7 @@
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
                     <param name="setpoint_tolerance" value="0.1" />
+                    <param name="neutral_point" value="50" />
                 </node>
 
                 <node name="lcg_pid" pkg="pid" type="controller" ns="lcg" output="screen">

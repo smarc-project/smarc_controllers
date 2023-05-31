@@ -7,15 +7,15 @@
 class PIDTrim{
 
   public:
-    
-    std::string topic_from_controller_, topic_to_actuator_, topic_from_plant_, setpoint_req_, setpoint_res_;
+    std::string topic_from_controller_, topic_to_actuator_, topic_from_plant_, setpoint_req_, setpoint_res_, setpoint_reached_;
     ros::NodeHandle *nh_priv_;
     ros::NodeHandle *nh_;
     ros::Subscriber pid_action_sub, plant_sub, sp_sub, state_sub;
-    ros::Publisher control_action_pub, setpoint_pub;
+    ros::Publisher control_action_pub, setpoint_pub, sp_reached_pub_;
 
     double setpoint_, error_t_, setpoint_tolerance_, neutral_setpoint_, ff_term_;
     bool setpoint_rcv_;
+    std_msgs::Bool sp_reached_;
 
     PIDTrim(ros::NodeHandle &nh_priv, ros::NodeHandle &nh) : nh_priv_(&nh_priv), nh_(&nh)
     {
@@ -24,6 +24,7 @@ class PIDTrim{
       nh_priv_->param<std::string>("topic_from_plant", topic_from_plant_, "uavcan_lcg_command");
       nh_priv_->param<std::string>("setpoint_req", setpoint_req_, "uavcan_lcg_command");
       nh_priv_->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
+      nh_priv_->param<std::string>("setpoint_reached", setpoint_reached_, "uavcan_lcg_command");
       nh_priv_->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
       nh_priv_->param<double>("neutral_point", neutral_setpoint_, 0.1);
       nh_priv_->param<double>("ff_term", ff_term_, 0.1);
@@ -38,6 +39,7 @@ class PIDTrim{
       // initiate publishers
       control_action_pub = nh_->advertise<sam_msgs::PercentStamped>(topic_to_actuator_, 10);
       setpoint_pub = nh_->advertise<std_msgs::Float64>(setpoint_res_, 10);
+      sp_reached_pub_ = nh_->advertise<std_msgs::Bool>(setpoint_reached_, 10, true);
     }
 
     // Gets setpoint from GUI
@@ -45,6 +47,8 @@ class PIDTrim{
     {
       setpoint_ = setpoint.data;
       setpoint_rcv_ = true;
+      sp_reached_.data = false;
+      sp_reached_pub_.publish(sp_reached_);
     }
     
     // Checks current error in the controller: if over tolerance, publish setpoint to PID. Else, stop PID 
@@ -56,6 +60,7 @@ class PIDTrim{
           std_msgs::Float64 msg;
           msg.data = setpoint_;
           setpoint_pub.publish(msg);
+
         }
         else{
           ROS_INFO_NAMED(ros::this_node::getName(), "Setpoint reached %f", plant_state.data);
@@ -65,6 +70,9 @@ class PIDTrim{
           sam_msgs::PercentStamped control_action;
           control_action.value = neutral_setpoint_; 
           control_action_pub.publish(control_action);
+          
+          sp_reached_.data = true;
+          sp_reached_pub_.publish(sp_reached_);
         }
       } 
     }

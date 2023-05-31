@@ -52,6 +52,7 @@
                     <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" />
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
+                    <param name="setpoint_reached" value="setpoint_reached" />
                     <param name="setpoint_tolerance" value="0.2" />
                     <param name="neutral_point" value="70" />
                     <param name="ff_term" value="50" />
@@ -82,6 +83,7 @@
                     <param name="topic_from_plant" value="/$(arg namespace)/dr/pitch" />
                     <param name="setpoint_req" value="setpoint" />
                     <param name="setpoint_res" value="setpoint_pid" />
+                    <param name="setpoint_reached" value="setpoint_reached" />
                     <param name="setpoint_tolerance" value="0.05" />
                     <param name="neutral_point" value="50" />
                     <param name="ff_term" value="50." />

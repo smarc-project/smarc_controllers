@@ -1,0 +1,22 @@
+<launch>
+
+    <arg name="namespace" default="sam"/>
+    
+    <group ns="$(arg namespace)">
+        <group ns="ctrl">
+
+            <node name="usv_wp_control" pkg="floatsam_basic_controllers" type="usv_wp_control.py"  output="screen">
+                <param name="rpm1_cmd_topic" value="/$(arg namespace)/core/thruster1_cmd" />
+                <param name="rpm2_cmd_topic" value="/$(arg namespace)/core/thruster2_cmd" />
+                <param name="heading_setpoint_topic" value="/$(arg namespace)/ctrl/heading/setpoint" />
+                <param name="heading_enable_topic" value="/$(arg namespace)/ctrl/heading/enable" />
+                <param name="rpm_enable_top" value="/$(arg namespace)/ctrl/rpm/enable" />
+                <param name="rpm_sp_top" value="/$(arg namespace)/ctrl/rpm/setpoint" />
+                <param name="d_between_thrusters" value="0.5" />
+                <param name="heading_kp" value="1000" />
+            </node>
+        
+        </group>
+    </group>
+
+</launch>

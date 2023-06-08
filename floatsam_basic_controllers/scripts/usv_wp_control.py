@@ -62,7 +62,7 @@ class SimpleUSVController(object):
             v_dot = self.heading_kp * (heading_sp.data * self.d_thrusters)
 
             # Safety check for heading_kp vals
-            v_dot = v_dot if v_dot < self.rpm_desired*0.8 else self.rpm_desired*0.8
+            # v_dot = v_dot if v_dot < self.rpm_desired*0.8 else self.rpm_desired*0.8
 
             # If turning left, reduce port thrustering
             if np.sign(v_dot) == 1:

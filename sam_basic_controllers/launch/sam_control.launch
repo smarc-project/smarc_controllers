@@ -5,6 +5,13 @@
     <group ns="$(arg namespace)">
         <group ns="ctrl">
 
+            <node name="lookahead_depth_node" pkg="sam_basic_controllers" type="depth_lookahead_node.py" output="screen">
+                <param name="depth_top" value="/$(arg namespace)/dr/depth" />
+                <param name="pitch_top" value="/$(arg namespace)/dr/pitch" />
+                <param name="lookahead_depth" value="/$(arg namespace)/ctrl/lookahead_depth" />
+                <param name="lookahead_dist" value="3." />
+            </node>
+
             <!-- Thrusters controllers -->
             <node name="heading_pid" pkg="pid" type="controller" output="screen">
                 <param name="Kp" value="1." />
@@ -31,7 +38,8 @@
                 <param name="windup_limit" value="1" />
                 <param name="max_loop_frequency" value="100.0" />
                 <param name="min_loop_frequency" value="1.0" />
-                <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" />
+                <!-- <param name="topic_from_plant" value="/$(arg namespace)/dr/depth" /> -->
+                <param name="topic_from_plant" value="/$(arg namespace)/ctrl/lookahead_depth" />
                 <param name="topic_from_controller" value="elevator_pid/ctrl_effort" />
                 <remap from="setpoint" to="elevator_pid/setpoint" />
                 <remap from="pid_enable" to="elevator_pid/pid_enable" />

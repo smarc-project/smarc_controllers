@@ -17,7 +17,7 @@ class SimpleUSVController(object):
         rpm1_cmd_top = rospy.get_param("~rpm1_cmd_topic", "rpm/setpoint")
         rpm2_cmd_top = rospy.get_param("~rpm2_cmd_topic", "rpm/setpoint")
         self.d_thrusters = rospy.get_param("~d_between_thrusters", 0.5)
-        self.heading_kp = rospy.get_param("~heading_kp", 1000)
+        self.heading_kp = rospy.get_param("~heading_kp", 500)
 
         self.rpm_1_pub = rospy.Publisher(rpm1_cmd_top, ThrusterRPM, queue_size=1)
         self.rpm_2_pub = rospy.Publisher(rpm2_cmd_top, ThrusterRPM, queue_size=1)
@@ -44,13 +44,8 @@ class SimpleUSVController(object):
 
         if not self.rpm_enable and not self.stopped:
 
-            rpm_prt = ThrusterRPM()
-            rpm_stb = ThrusterRPM()
-            rpm_prt.rpm = 0.
-            rpm_stb.rpm = 0.
-
-            self.rpm_1_pub.publish(rpm_prt)
-            self.rpm_2_pub.publish(rpm_stb)
+            self.rpm_1_pub.publish(ThrusterRPM(0))
+            self.rpm_2_pub.publish(ThrusterRPM(0))
             self.stopped = True
 
     def rpm_sp_cb(self, rpm):
@@ -59,10 +54,8 @@ class SimpleUSVController(object):
 
     def heading_sp_cb(self, heading_sp):
 
-        rpm_prt = ThrusterRPM()
-        rpm_stb = ThrusterRPM()
-        rpm_prt.rpm = self.rpm_desired
-        rpm_stb.rpm = self.rpm_desired
+        rpm_prt = ThrusterRPM(self.rpm_desired)
+        rpm_stb = ThrusterRPM(self.rpm_desired)
 
         if self.heading_enable and self.rpm_enable:
             

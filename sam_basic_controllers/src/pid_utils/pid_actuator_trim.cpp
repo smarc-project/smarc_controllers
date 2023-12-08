@@ -1,33 +1,34 @@
-#include <ros/ros.h>
-#include <std_msgs/Float64.h>
-#include <sam_msgs/PercentStamped.h>
-//#include <std_msgs/Empty.h>
-#include <std_msgs/Bool.h>
+// #include <ros/ros.h>
+#include "rclcpp/rclcpp.hpp"
+// #include <std_msgs/Float64.h>
+#include "std_msgs/msg/float64.hpp"
+// #include "sam_msgs/PercentStamped.h"
+#include "sam_msgs/msg/percent_stamped.hpp"
+#include "std_msgs/msg/bool.hpp"
 
 class PIDTrim{
 
   public:
     std::string topic_from_controller_, topic_to_actuator_, topic_from_plant_, setpoint_req_, setpoint_res_, setpoint_reached_;
-    ros::NodeHandle *nh_priv_;
-    ros::NodeHandle *nh_;
+    rclcpp::Node *nh_;
     ros::Subscriber pid_action_sub, plant_sub, sp_sub, state_sub;
     ros::Publisher control_action_pub, setpoint_pub, sp_reached_pub_;
 
     double setpoint_, error_t_, setpoint_tolerance_, neutral_setpoint_, ff_term_;
     bool setpoint_rcv_;
-    std_msgs::Bool sp_reached_;
+    std_msgs::msg::Bool sp_reached_;
 
-    PIDTrim(ros::NodeHandle &nh_priv, ros::NodeHandle &nh) : nh_priv_(&nh_priv), nh_(&nh)
+    PIDTrim(rclcpp::Node &nh) : nh_(&nh)
     {
-      nh_priv_->param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
-      nh_priv_->param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
-      nh_priv_->param<std::string>("topic_from_plant", topic_from_plant_, "uavcan_lcg_command");
-      nh_priv_->param<std::string>("setpoint_req", setpoint_req_, "uavcan_lcg_command");
-      nh_priv_->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
-      nh_priv_->param<std::string>("setpoint_reached", setpoint_reached_, "uavcan_lcg_command");
-      nh_priv_->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
-      nh_priv_->param<double>("neutral_point", neutral_setpoint_, 0.1);
-      nh_priv_->param<double>("ff_term", ff_term_, 0.1);
+      nh_ ->param<std::string>("topic_from_controller", topic_from_controller_, "control_action");
+      nh_ ->param<std::string>("topic_to_actuator", topic_to_actuator_, "uavcan_lcg_command");
+      nh_ ->param<std::string>("topic_from_plant", topic_from_plant_, "uavcan_lcg_command");
+      nh_ ->param<std::string>("setpoint_req", setpoint_req_, "uavcan_lcg_command");
+      nh_ ->param<std::string>("setpoint_res", setpoint_res_, "uavcan_lcg_command");
+      nh_ ->param<std::string>("setpoint_reached", setpoint_reached_, "uavcan_lcg_command");
+      nh_ ->param<double>("setpoint_tolerance", setpoint_tolerance_, 0.1);
+      nh_ ->param<double>("neutral_point", neutral_setpoint_, 0.1);
+      nh_ ->param<double>("ff_term", ff_term_, 0.1);
 
       setpoint_rcv_ = false;
 
@@ -88,22 +89,20 @@ class PIDTrim{
 
 
 int main(int argc, char** argv){
-  ros::init(argc, argv, "pid_actuator");
+  rclcpp::init(argc, argv);
+  auto node = rclcpp::Node::make_shared("pid_actuator");
 
-  ros::NodeHandle node_priv("~");
-  ros::NodeHandle node;
+  PIDTrim* pid_obj = new PIDTrim(*node);
 
-  PIDTrim* pid_obj = new PIDTrim(node_priv, node);
-
-  ros::spin();
-
-  ros::waitForShutdown();
-
-  if (!ros::ok())
+  rclcpp::Rate loop_rate(10);
+  while(rclcpp::ok())
   {
-      delete pid_obj;
+    rclcpp::spin_some(node);
+    loop_rate.sleep();
   }
-  ROS_INFO("PID trim finished");
+
+  delete pid_obj;
+  RCLCPP_INFO(node->get_logger(), "PID trim finished");
 
   return 0;
 }

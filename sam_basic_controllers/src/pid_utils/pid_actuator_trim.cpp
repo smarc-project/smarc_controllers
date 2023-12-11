@@ -30,11 +30,11 @@ class PIDTrim{
       // Type inferred from default value
       // I'd make these string keys into enums... /Ozer
       nh_->declare_parameter("topic_from_controller", "control_action");
-      nh_->declare_parameter("topic_to_actuator", "uavcan_lcg_command");
-      nh_->declare_parameter("topic_from_plant", "uavcan_lcg_command");
-      nh_->declare_parameter("setpoint_req", "uavcan_lcg_command");
-      nh_->declare_parameter("setpoint_res", "uavcan_lcg_command");
-      nh_->declare_parameter("setpoint_reached", "uavcan_lcg_command");
+      nh_->declare_parameter("topic_to_actuator", "core/lcg_cmd");
+      nh_->declare_parameter("topic_from_plant", "dr/pitch");
+      nh_->declare_parameter("setpoint_req", "setpoint");
+      nh_->declare_parameter("setpoint_res", "setpoint_pid");
+      nh_->declare_parameter("setpoint_reached", "setpoint_reached");
       // Alternatively, declare a bunch at the same time if theyre all the same type
       // The first (empty) string is a namespace that can be added, which would make
       // the params "namespace.key" if that string is "namespace"

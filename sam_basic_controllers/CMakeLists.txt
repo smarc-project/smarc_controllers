@@ -9,11 +9,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find_package(<dependency> REQUIRED)
-find_package(ament_cmake REQUIRED)
+# use this for mixed cpp-py packages like this one...
+# or maybe just dont mix them lol
+find_package(ament_cmake_python REQUIRED) 
 
 find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 find_package(sam_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+
 
 
 add_executable(pid_actuator_trim src/pid_utils/pid_actuator_trim.cpp)
@@ -31,10 +35,21 @@ install(
   DESTINATION lib/${PROJECT_NAME}
 )
 
+# simple python exectuables
+# dont forget a __init__.py!
+ament_python_install_package(${PROJECT_NAME})
+install(
+  PROGRAMS
+  ${PROJECT_NAME}/depth_lookahead_node.py
+  ${PROJECT_NAME}/thruster_ctrl_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 install(
   DIRECTORY launch/
   DESTINATION share/${PROJECT_NAME}/launch/
 )
+
 
 # When there is such a directory...
 # install(

@@ -36,9 +36,10 @@ install(
   DESTINATION share/${PROJECT_NAME}/launch/
 )
 
-install(
-  DIRECTORY include/
-  DESTINATION share/${PROJECT_NAME}/include/
-)
+# When there is such a directory...
+# install(
+#   DIRECTORY include/
+#   DESTINATION share/${PROJECT_NAME}/include/
+# )
 
 ament_package()

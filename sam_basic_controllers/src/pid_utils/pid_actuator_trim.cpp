@@ -6,6 +6,8 @@
 #include "sam_msgs/msg/percent_stamped.hpp"
 #include "std_msgs/msg/bool.hpp"
 
+using std::placeholders::_1;
+
 class PIDTrim{
 
   public:
@@ -54,20 +56,21 @@ class PIDTrim{
       pid_action_sub = nh_->create_subscription<std_msgs::msg::Float64>(
         nh_->get_parameter("topic_from_controller").as_string(),
         10, //Qos is different than "queue_size".
-        &PIDTrim::PIDCallback);
+        std::bind(&PIDTrim::PIDCallback, this, _1)
+        );
 
       // sp_sub = nh_->subscribe(setpoint_req_, 1, &PIDTrim::SetpointCallback, this);
       sp_sub = nh_->create_subscription<std_msgs::msg::Float64>(
         nh_->get_parameter("setpoint_req").as_string(),
         10,
-        &PIDTrim::SetpointCallback
+        std::bind(&PIDTrim::SetpointCallback, this, _1)
       );
 
       // state_sub = nh_->subscribe(topic_from_plant_, 1, &PIDTrim::PlantCallback, this);
       state_sub = nh_->create_subscription<std_msgs::msg::Float64>(
         nh_->get_parameter("topic_from_plant").as_string(),
         10,
-        &PIDTrim::PlantCallback
+        std::bind(&PIDTrim::PlantCallback, this, _1)
       );
 
       // initiate publishers
